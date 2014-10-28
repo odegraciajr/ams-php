@@ -208,7 +208,7 @@ class ProjectModel extends Model
 			$message .= "Project Description: <b>".$prog['description']."</b><br/><br/>";
 			$hash = $this->createInviteLink($membership_id,$proj_id);
 			
-			$verify_link = App::baseUrl() . "/project/verify/$hash&id=$proj_id&accept=";
+			$verify_link = App::baseUrl() . "/project/verify/$hash?id=$proj_id&accept=";
 			$message .= "Accept Invitation: <a href='$verify_link". 1 ."'>Accept</a><br/>";
 			$message .= "Decline Invitation: <a href='$verify_link". 0 ."'>Decline</a><br/>";
 			
@@ -244,7 +244,7 @@ class ProjectModel extends Model
 			$message .= "Project Description: <b>".$proj['description']."</b><br/><br/>";
 			$hash = $this->createInviteLink($membership_id,$proj_id);
 			
-			$verify_link = App::baseUrl() . "/project/verifynew/$hash&id=$proj_id&accept=";
+			$verify_link = App::baseUrl() . "/project/verifynew/$hash?id=$proj_id&accept=";
 			$message .= "Accept Invitation: <a href='$verify_link". 1 ."'>Accept</a><br/>";
 			$message .= "Decline Invitation: <a href='$verify_link". 0 ."'>Decline</a><br/>";
 			
