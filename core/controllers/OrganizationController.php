@@ -107,6 +107,133 @@ class OrganizationController extends Controller
 		$this->render('view'.$action,$param);
 	}
 	
+	public function verifyAction( $hash )
+	{
+		$this->layout = "login";
+		
+		AccountModel::destroy();
+		
+		$param = [
+			'error' => false,
+		];
+		$model = $this->loadModel();
+		
+		if( isset( $hash ) ) {
+			$response = $_GET['accept'];
+			$org_id = $_GET['id'];
+					
+			$result = $model->verify( $hash, $response,$org_id );
+
+			if( $result['status'] ) {
+				//$this->view->set('error_type', 1);
+				$param['error_type'] = 1;
+			}
+			else {
+				//$this->view->set('error_type', 0);
+				$param['error_type'] = 0;
+			}
+			//$this->view->set('error_message', $result['message']);
+			$param['error_message'] = $result['message'];
+			$this->setPageTitle( 'Organization Membership Verification');
+
+		}
+		else {
+			$param['error_type'] = 0;
+			//$this->view->set('error_message', 'Invalid Verification');
+			$param['error_message'] = 'Invalid Verification';
+			$this->setPageTitle( 'Organization Membership Verification');
+		}
+
+		//return $this->view->output();
+		$this->render('verify',$param);
+	}
+	public function verifynewAction( $hash )
+	{
+		$this->layout = "login";
+		
+		AccountModel::destroy();
+		
+		$param = [
+			'error' => false,
+		];
+		$model = $this->loadModel();
+		
+		if( isset( $hash ) ) {
+			$response = $_GET['accept'];
+			$org_id = $_GET['id'];
+			
+			if( intval($response) == 0 ) {
+				//$this->_setView('verify');
+				$result = $model->verifynew( $hash, $response,$org_id, null );
+
+				if( $result['status'] ) {
+					//$this->view->set('error_type', 1);
+					$param['error_type'] = 1;
+				}
+				else {
+					//$this->view->set('error_type', 0);
+					$param['error_type'] = 0;
+				}
+				//$this->view->set('error_message', $result['message']);
+				$param['error_message'] = $result['message'];
+				$this->setPageTitle( 'Organization Membership Verification');
+				
+				$this->render('verify',$param);exit;
+			}
+			else {
+				if( isset( $_POST['action_post'] ) && $_POST['action_post'] == "do_organization_invitenew_user") {
+					if( isset( $_POST['password'] ) && $_POST['password'] && isset( $_POST['first_name'] ) && $_POST['first_name'] && isset( $_POST['last_name'] ) && $_POST['last_name'] ) {
+						
+						$user_data = array(
+							'password' => $_POST['password'],
+							'first_name' => $_POST['first_name'],
+							'last_name' => $_POST['last_name']
+						);
+						$result = $model->verifynew( $hash, $response,$org_id, $user_data );
+						
+						//$this->_setView('verify');
+						
+						if( $result['status'] ) {
+							//$this->view->set('error_type', 1);
+							$param['error_type'] = 1;
+						}
+						else {
+							//$this->view->set('error_type', 0);
+							$param['error_type'] = 0;
+						}
+						
+						//$this->view->set('error_message', $result['message']);
+						$param['error_message'] =$result['message'];
+						$this->setPageTitle( 'Organization Membership Verification');
+						
+						$this->render('verify',$param);exit;
+					}
+					else {
+						//$this->view->set('error', true);
+						$param['error'] = true;
+						//$this->view->set('error_message', 'All fields are required.');
+						$param['error_message'] = 'All fields are required.';
+					}
+				}
+			}
+			$this->setPageTitle( 'Organization Membership Verification');
+		}
+		else {
+			//$this->_setView('verify');
+			//$this->view->set('error_type', 0);
+			//$this->view->set('error_message', 'Invalid Verification');
+			//$this->view->setPageTitle( 'Organization Membership Verification');
+			
+			$param['error_type'] = 0;
+			$param['error_message'] = 'Invalid Verification';
+			$this->setPageTitle( 'Organization Membership Verification');
+			$this->render('verify',$param);exit;
+			
+		}
+
+		$this->render('verifynew',$param);
+	}
+	
 	/*public function view($id)
 	{
 		if( App::User()->isGuest )
@@ -185,7 +312,7 @@ class OrganizationController extends Controller
 			
 		}
 		return $this->view->output();
-	}*/
+	}
 	
 	public function verify( $hash )
 	{
@@ -275,5 +402,5 @@ class OrganizationController extends Controller
 		}
 
 		return $this->view->output();
-	}
+	}*/
 }

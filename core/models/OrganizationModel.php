@@ -197,7 +197,7 @@ class OrganizationModel extends Model
 			$message .= "ORGANIZATION Description: <b>".$org['description']."</b><br/><br/>";
 			$hash = $this->createInviteLink($membership_id,$org_id);
 			
-			$verify_link = App::baseUrl() . "/organization/verify/$hash&id=$org_id&accept=";
+			$verify_link = App::baseUrl() . "/organization/verify/$hash?id=$org_id&accept=";
 			$message .= "Accept Invitation: <a href='$verify_link". 1 ."'>Accept</a><br/>";
 			$message .= "Decline Invitation: <a href='$verify_link". 0 ."'>Decline</a><br/>";
 			
@@ -232,7 +232,7 @@ class OrganizationModel extends Model
 			$message .= "ORGANIZATION Description: <b>".$org['description']."</b><br/><br/>";
 			$hash = $this->createInviteLink($membership_id,$org_id);
 			
-			$verify_link = App::baseUrl() . "/organization/verifynew/$hash&id=$org_id&accept=";
+			$verify_link = App::baseUrl() . "/organization/verifynew/$hash?id=$org_id&accept=";
 			$message .= "Accept Invitation: <a href='$verify_link". 1 ."'>Accept</a><br/>";
 			$message .= "Decline Invitation: <a href='$verify_link". 0 ."'>Decline</a><br/>";
 			

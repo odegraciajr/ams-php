@@ -234,6 +234,9 @@ class AccountModel extends Model
 	}
 	
 	public static function destroy(){
+		if($_SESSION['user_id'])
+			unset($_SESSION['user_id']);
+			
 		session_destroy();
 		setcookie('user_id', '', time() - 1*24*60*60);
 		setcookie('user_hash', '', time() - 1*24*60*60);
