@@ -36,20 +36,20 @@
 				<!-- Collect the nav links, forms, and other content for toggling -->
 				<div id="bs-example-navbar-collapse-8" class="collapse navbar-collapse">
 					<ul class="nav navbar-nav">
-						<li <?php Helper::setActiveNav($this->activeNav,'dashboard');?>><a href="<?php echo RouteManager::createUrl('/dashboard');?>">Dashboard</a></li>
-						<li <?php Helper::setActiveNav($this->activeNav,'profile');?>><a href="<?php echo RouteManager::createUrl('/account/');?>">Profile</a></li>
+						<li <?php Helper::setActiveNav($this->activeNav,'dashboard');?>><a href="<?php echo $this->createUrl('/dashboard');?>">Dashboard</a></li>
+						<li <?php Helper::setActiveNav($this->activeNav,'profile');?>><a href="<?php echo $this->createUrl('/account/');?>">Profile</a></li>
 						<li <?php Helper::setActiveNav($this->activeNav,'organization');?>>
 							<a class="dropdown-toggle" data-toggle="dropdown" href="#">Organization <span class="caret"></span></a>
 							<ul class="dropdown-menu" role="menu">
-								<li><a href="<?php echo RouteManager::createUrl('/organization');?>">My Organizations</a></li>
-								<li><a href="<?php echo RouteManager::createUrl('/organization/create');?>">Create Organization</a></li>
+								<li><a href="<?php echo $this->createUrl('/organization');?>">My Organizations</a></li>
+								<li><a href="<?php echo $this->createUrl('/organization/create');?>">Create Organization</a></li>
 							</ul>
 						</li>
 						<li <?php Helper::setActiveNav($this->activeNav,'project');?>>
 							<a class="dropdown-toggle" data-toggle="dropdown" href="#">Project <span class="caret"></span></a>
 							<ul class="dropdown-menu" role="menu">
-								<li><a href="<?php echo RouteManager::createUrl('/project');?>">My Projects</a></li>
-								<li><a href="<?php echo RouteManager::createUrl('/project/create');?>">Create Project</a></li>
+								<li><a href="<?php echo $this->createUrl('/project');?>">My Projects</a></li>
+								<li><a href="<?php echo $this->createUrl('/project/create');?>">Create Project</a></li>
 							</ul>
 						</li>
 					</ul>
@@ -57,10 +57,10 @@
 						<li class="dropdown">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo App::User()->full_name;?> <span class="caret"></span></a>
 							<ul class="dropdown-menu" role="menu">
-								<li><a href="<?php echo RouteManager::createUrl('/account/viewprofile/');?>">View Profile</a></li>
-								<li><a href="<?php echo RouteManager::createUrl('/account/home');?>">Manage Account</a></li>
+								<li><a href="<?php echo $this->createUrl('/account/');?>">View Profile</a></li>
+								<li><a href="<?php echo $this->createUrl('/account/home');?>">Manage Account</a></li>
 								<li class="divider"></li>
-								<li><a href="<?php echo RouteManager::createUrl('/account/logout');?>">Logout</a></li>
+								<li><a href="<?php echo $this->createUrl('/account/logout');?>">Logout</a></li>
 							</ul>
 						</li>
 					</ul>

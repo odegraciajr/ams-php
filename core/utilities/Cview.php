@@ -111,7 +111,7 @@ class Cview
 		RouteManager::set404($customHandler);
 	}
 	
-	public function createUrl($route,$params=array(),$ampersand='&')
+	public function createUrl($route,$params=null,$ampersand='&')
 	{
 		return RouteManager::createUrl($route,$params,$ampersand);
 	}
@@ -119,5 +119,31 @@ class Cview
 	public function redirect( $link )
 	{
 		RouteManager::redirect( $link );
+	}
+	
+	public function getUrlReferrer()
+	{
+		return RouteManager::getUrlReferrer();
+	}
+	
+	public function setReturnUrl($url=null)
+	{
+		if($url)
+			App::setSession('ReturnUrl',$url);
+			
+		App::setSession('ReturnUrl',$_SERVER['REQUEST_URI']);
+	}
+	
+	public function getReturnUrl()
+	{
+		return App::getSession('ReturnUrl');
+	}
+	
+	public function loginGuest()
+	{
+		if( App::User()->isGuest ) {
+			$this->setReturnUrl();
+			$this->redirect($this->createUrl( '/account/login'));
+		}
 	}
 }

@@ -9,6 +9,8 @@ class ProjectController extends Controller
 
 	public function indexAction()
 	{
+		$this->loginGuest();
+		
 		$this->setPageTitle('Project');
 		
 		$params = [
@@ -20,6 +22,8 @@ class ProjectController extends Controller
 	
 	public function createAction()
 	{
+		$this->loginGuest();
+		
 		$param = [];
 		
 		if( isset( $_POST['action_post'] ) && $_POST['action_post'] == "do_project" ) {
@@ -38,14 +42,13 @@ class ProjectController extends Controller
 	
 	public function viewAction($id,$action='main')
 	{
+		$this->loginGuest();
+		
 		$param = [
 			'id' => $id,
 			'error_message' => false,
 		];
-		
-		if( App::User()->isGuest )
-			$this->redirect('/account/login');
-			
+
 		$model = $this->loadModel('ProjectModel');
 		$projInfo = $model->getProjectInfo($id);
 		$isProjOwner = $model->isProjectOwner($id);
@@ -148,15 +151,13 @@ class ProjectController extends Controller
 	
 	public function messagesAction($proj_id,$thread_id)
 	{
+		$this->loginGuest();
 		
 		$param = [
 			'id' => $proj_id,
 			'error_message' => false,
 		];
-		
-		if( App::User()->isGuest )
-			$this->redirect('/account/login');
-		
+
 		$model = $this->loadModel();
 		
 		if($model->isProjectMember(App::User()->id,$proj_id)) {
@@ -209,10 +210,7 @@ class ProjectController extends Controller
 	public function verifyAction( $hash )
 	{
 		$this->layout = "login";
-		
-		//AccountModel::destroy();
-		//App::sessionStart();
-		//die($_SESSION['user_id']);
+
 		$param = [
 			'error' => false,
 		];
@@ -225,22 +223,17 @@ class ProjectController extends Controller
 			$result = $model->verify( $hash, $response,$proj_id );
 
 			if( $result['status'] ) {
-				//$this->view->set('error_type', 1);
 				$param['error_type'] = 1;
 			}
 			else {
-				//$this->view->set('error_type', 0);
 				$param['error_type'] = 0;
 			}
-			//$this->view->set('error_message', $result['message']);
 			$param['error_message'] = $result['message'];
 			$this->setPageTitle( 'Project Membership Verification');
 
 		}
 		else {
-			//$this->view->set('error_type', 0);
 			$param['error_type'] = 0;
-			//$this->view->set('error_message', 'Invalid Verification');
 			$param['error_message'] = 'Invalid Verification';
 			$this->setPageTitle( 'Project Membership Verification');
 		}
@@ -268,14 +261,11 @@ class ProjectController extends Controller
 				$result = $model->verifynew( $hash, $response,$proj_id, null );
 
 				if( $result['status'] ) {
-					//$this->view->set('error_type', 1);
 					$param['error_type'] = 1;
 				}
 				else {
-					//$this->view->set('error_type', 0);
 					$param['error_type'] = 0;
 				}
-				//$this->view->set('error_message', $result['message']);
 				$param['error_message'] = $result['message'];
 				$this->setPageTitle( 'Project Membership Verification');
 				
@@ -291,28 +281,25 @@ class ProjectController extends Controller
 							'last_name' => $_POST['last_name']
 						);
 						$result = $model->verifynew( $hash, $response,$proj_id, $user_data );
-						
-						//$this->_setView('verify');
-						
+
 						if( $result['status'] ) {
-							//$this->view->set('error_type', 1);
+							if( isset( $result['user_id'] ) ) {
+								$userData = $this->loadModel('AccountModel')->getUserData($result['user_id']);
+								App::setSession('login_email',$userData['email']);
+							}
 							$param['error_type'] = 1;
 						}
 						else {
-							//$this->view->set('error_type', 0);
 							$param['error_type'] = 0;
 						}
 						
-						//$this->view->set('error_message', $result['message']);
 						$param['error_message'] = $result['message'];
 						$this->setPageTitle( 'Project Membership Verification');
 						
 						$this->render('verify',$param);exit;
 					}
 					else {
-						//$this->view->set('error', true);
 						$param['error'] = true;
-						//$this->view->set('error_message', 'All fields are required.');
 						$param['error_message'] = 'All fields are required.';
 					}
 				}
@@ -320,10 +307,7 @@ class ProjectController extends Controller
 			$this->setPageTitle( 'Project Membership Verification');
 		}
 		else {
-			//$this->_setView('verify');
-			//$this->view->set('error_type', 0);
-			//$this->view->set('error_message', 'Invalid Verification');
-			
+
 			$param['error_type'] = 0;
 			$param['error_message'] = 'Invalid Verification';
 			$this->setPageTitle( 'Project Membership Verification');
@@ -333,95 +317,4 @@ class ProjectController extends Controller
 
 		$this->render('verifynew',$param);
 	}
-	/*
-	public function verify( $hash )
-	{
-		AccountModel::destroy();
-		if( isset( $hash ) ) {
-			$response = $_GET['accept'];
-			$proj_id = $_GET['id'];
-					
-			$result = $this->_model->verify( $hash, $response,$proj_id );
-
-			if( $result['status'] ) {
-				$this->view->set('error_type', 1);
-			}
-			else {
-				$this->view->set('error_type', 0);
-			}
-			$this->view->set('error_message', $result['message']);
-			$this->view->setPageTitle( 'Project Membership Verification');
-
-		}
-		else {
-			$this->view->set('error_type', 0);
-			$this->view->set('error_message', 'Invalid Verification');
-			$this->view->setPageTitle( 'Project Membership Verification');
-		}
-
-		return $this->view->output();
-	}
-	
-	public function verifynew( $hash )
-	{
-		AccountModel::destroy();
-		if( isset( $hash ) ) {
-			$response = $_GET['accept'];
-			$proj_id = $_GET['id'];
-			
-			if( intval($response) == 0 ) {
-				$this->_setView('verify');
-				$result = $this->_model->verifynew( $hash, $response,$proj_id, null );
-
-				if( $result['status'] ) {
-					$this->view->set('error_type', 1);
-				}
-				else {
-					$this->view->set('error_type', 0);
-				}
-				$this->view->set('error_message', $result['message']);
-				$this->view->setPageTitle( 'Project Membership Verification');
-			}
-			else {
-				if( isset( $_POST['action_post'] ) && $_POST['action_post'] == "do_project_invitenew_user") {
-					if( isset( $_POST['password'] ) && $_POST['password'] && isset( $_POST['first_name'] ) && $_POST['first_name'] && isset( $_POST['last_name'] ) && $_POST['last_name'] ) {
-						
-						$user_data = array(
-							'password' => $_POST['password'],
-							'first_name' => $_POST['first_name'],
-							'last_name' => $_POST['last_name']
-						);
-						$result = $this->_model->verifynew( $hash, $response,$proj_id, $user_data );
-						
-						$this->_setView('verify');
-						
-						if( $result['status'] ) {
-							$this->view->set('error_type', 1);
-						}
-						else {
-							$this->view->set('error_type', 0);
-						}
-						
-						$this->view->set('error_message', $result['message']);
-						$this->view->setPageTitle( 'Project Membership Verification');
-						
-					}
-					else {
-						$this->view->set('error', true);
-						$this->view->set('error_message', 'All fields are required.');
-					}
-				}
-			}
-			$this->view->setPageTitle( 'Project Membership Verification');
-		}
-		else {
-			$this->_setView('verify');
-			$this->view->set('error_type', 0);
-			$this->view->set('error_message', 'Invalid Verification');
-			$this->view->setPageTitle( 'Project Membership Verification');
-			
-		}
-
-		return $this->view->output();
-	}*/
 }

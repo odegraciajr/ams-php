@@ -10,7 +10,7 @@
 	  <div class="form-group">
 		<label for="email" class="col-sm-2 control-label">Email</label>
 		<div class="col-sm-10">
-		  <input type="email" class="form-control" id="email" name="email" placeholder="email@account.com">
+		  <input type="email" value="<?php echo $login_email;?>" class="form-control" id="email" name="email" placeholder="email@account.com">
 		</div>
 	  </div>
 	  <div class="form-group">
@@ -25,13 +25,14 @@
 			<label>
 			  <input name="remember" type="checkbox"> Remember me
 			</label>
-			<a class="register-link" href="<?php echo RouteManager::createUrl('/account/register');?>">Create an account</a>
+			<a class="register-link" href="<?php echo $this->createUrl('/account/register');?>">Create an account</a>
 		  </div>
 		</div>
 	  </div>
 	  <div class="form-group">
 		<div class="col-sm-offset-2 col-sm-10">
 		  <button type="submit" class="btn btn-default">Login</button>
+		  <a class="forgot-link" href="<?php echo $this->createUrl('/account/forgot');?>">Forgot Password</a>
 		</div>
 	  </div>
 	</form>

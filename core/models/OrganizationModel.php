@@ -413,7 +413,7 @@ class OrganizationModel extends Model
 						return array( "status" => true, "message" => "Organization membership declined." );
 					}
 					else{
-						return array( "status" => true, "message" => "Organization membership activated. You can now <a href=\"$org_link\">view the organization</a>." );
+						return array( "status" => true, "user_id" => $status['user_id'], "message" => "Organization membership activated. You can now <a href=\"$org_link\">view the organization</a>." );
 					}
 				}
 				else{

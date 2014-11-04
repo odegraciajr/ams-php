@@ -425,7 +425,7 @@ class ProjectModel extends Model
 						return array( "status" => true, "message" => "Project membership declined." );
 					}
 					else{
-						return array( "status" => true, "message" => "Project membership activated. You can now <a href=\"$proj_link\">view the project</a>." );
+						return array( "status" => true, "user_id" => $status['user_id'], "message" => "Project membership activated. You can now <a href=\"$proj_link\">view the project</a>." );
 					}
 				}
 				else{

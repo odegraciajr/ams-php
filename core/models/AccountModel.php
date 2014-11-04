@@ -10,6 +10,7 @@ class AccountModel extends Model
 	const USER_NOT_VERIFIED	= -3;
 	const LOGIN_SUCCESS		= 1;
 	const HASH_TYPE_NEWUSER = 1;
+	const HASH_TYPE_RESETPASSWORD = 4;
 	const INVITE_TYPE_ORG	= 2;
 	const INVITE_TYPE_PROJECT = 3;
 	const STATUS_INVITED 	= 3;
@@ -168,7 +169,7 @@ class AccountModel extends Model
 					$sth->bindValue(3, $hash, PDO::PARAM_STR);
 					$sth->execute();
 					
-					return array( "status" => true, "message" => "Account activated. You can now <a href=\"$login\">Login</a>." );
+					return array( "status" => true, "email" => $result['email_or_id'], "message" => "Account activated. You can now <a href=\"$login\">Login</a>." );
 				}
 				else{
 					return array( "status" => false, "message" => "Account already activated. You can now <a href=\"$login\">Login</a>." );
@@ -184,6 +185,69 @@ class AccountModel extends Model
 		}
 	}
 	
+	public function resetPasswordVerify( $hash, $hash_type )
+	{
+		$sth = $this->_db->prepare("SELECT email_or_id FROM users_hashes WHERE hash=? AND type=? AND status=?");
+		$sth->bindValue(1, $hash, PDO::PARAM_STR);
+		$sth->bindValue(2, $hash_type, PDO::PARAM_INT);
+		$sth->bindValue(3, 0, PDO::PARAM_INT);
+		$sth->execute();
+		$result = $sth->fetch();
+		
+		if( isset( $result['email_or_id'] ) ) {
+			return array( "status" => true, "email" => $result['email_or_id'] );
+		}
+		else {
+			return array( "status" => false, "message" => "Invalid reset password link!");
+		}
+	}
+	
+	public function resetPassword($email, $newpassword)
+	{
+		$sth = $this->_db->prepare("UPDATE users SET password=? WHERE email=?");
+		$sth->bindValue(1, $this->prepare_password( $newpassword ), PDO::PARAM_STR);
+		$sth->bindValue(2, $email, PDO::PARAM_STR);
+		$sth->execute();
+		
+		$sth = $this->_db->prepare("UPDATE users_hashes SET status=1 WHERE email_or_id=? AND type=?");
+		$sth->bindValue(1, $email, PDO::PARAM_STR);
+		$sth->bindValue(2, self::HASH_TYPE_RESETPASSWORD, PDO::PARAM_INT);
+		
+		return $sth->execute();
+	}
+	
+	public function sendResetPasswordEmail($email=null)
+	{
+		$userData = $this->getUserDataByEmail($email);
+		
+		if($userData) {
+			$full_name = $userData['full_name'];
+			$user_email = $userData['email'];
+			
+			$mail = App::Mail();
+
+			$mail->From = 'noreply@datastreamsolutions.com';
+			$mail->FromName = 'Mailer';
+			$mail->addAddress($user_email,$full_name);
+
+			$mail->isHTML(true);
+
+			$hash = $this->createUserHash($user_email,self::HASH_TYPE_RESETPASSWORD,$user_email);
+			$verify_link = App::baseUrl() . "/account/resetpassword/$hash";
+
+			$mail->Subject = 'Password Reset';
+			$mail->Body    = "Hi $full_name,<br/><br/>You requested to reset your password from our system.<br/><br/><a href='$verify_link'>Click here to begin the process.</a>";
+
+			$mail->send();
+			
+			return true;
+		}
+		else {
+			return false;
+		}
+
+		//var_dump($this->getUserDataByEmail($email));
+	}
 	public function searchUserByKeyword( $keyword )
 	{
 		$keyword = '%'.$keyword.'%';
@@ -218,6 +282,17 @@ class AccountModel extends Model
 		
 		return 0;
 	}
+	
+	public function getUserDataByEmail($email=null){
+	
+		if(filter_var($email, FILTER_VALIDATE_EMAIL)) {
+			$sth = $this->_db->prepare("SELECT *,CONCAT(first_name,' ', last_name) as full_name FROM users WHERE email=:email");
+			$sth->execute(array(':email' => $email));
+			return $sth->fetch();
+		}
+
+		return 0;
+	}
 		
 	public function prepare_password( $password )
 	{
@@ -234,7 +309,7 @@ class AccountModel extends Model
 	}
 	
 	public static function destroy(){
-		if($_SESSION['user_id'])
+		if(isset($_SESSION['user_id']))
 			unset($_SESSION['user_id']);
 			
 		session_destroy();

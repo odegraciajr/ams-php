@@ -152,15 +152,48 @@ class RouteManager extends CoreRouter
 	/**
 	 * TODO: fix the url routing depending on controller.
 	 */
-	public static function createUrl($route,$params=array(),$ampersand='&')
+	public static function createUrl($route,$params=null,$ampersand='&')
 	{
 		$route = preg_replace('#/+#','/', "/" . $route);
 		
-		return App::baseUrl() . $route;
+		$myparams = "";
+		if( is_array($params) && count($params)>0 ) {
+			$myparams = "?" . http_build_query($params);
+		}
+			
+		return App::baseUrl() . $route . $myparams;
 	}
 	
 	private static function getControllerSuffix()
 	{
 		return 'Controller';
+	}
+	
+	public static function getUrlReferrer()
+	{
+		if( isset( $_SERVER['HTTP_REFERER'] ) ) {
+			$http_referrer = strtolower($_SERVER['HTTP_REFERER']);
+			$referrer = $_SERVER['HTTP_REFERER'];
+			
+			$internal = strpos($http_referrer, strtolower(App::config()->domainName));
+			$login = strpos($http_referrer, '/login');
+			$logout = strpos($http_referrer, '/logout');
+			$register = strpos($http_referrer, '/register');
+			
+			if ($internal === false) {
+				return null;
+			}
+			
+			if( $login === false && $logout === false && $register === false ) {
+				return $referrer;
+			}
+			else {
+				return null;
+			}
+			
+		}
+		else {
+			return null;
+		}
 	}
 }
