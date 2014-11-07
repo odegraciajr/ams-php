@@ -26,7 +26,6 @@
 				  <th>Role</th>
 				  <th>Status</th>
 				  <th>Date Joined</th>
-				  <?php if($isProjOwner):?><th></th><?php endif;?>
 				</tr>
 			  </thead>
 			  <tbody>
@@ -42,15 +41,6 @@
 							<td><?php echo ProjectModel::getRole($proj['role_id']);?></td>
 							<td><?php echo ProjectModel::getStatus($proj['status']);?></td>
 							<td><?php echo date("F j, Y",strtotime($proj['date_joined']));?></td>
-							<?php if($isProjOwner):?>
-							<td>
-								<?php if( $proj['role_id'] >= 8 ):?>
-									<a href="<?php echo RouteManager::createUrl('/project/view/'.$proj['id']);?>" class="btn btn-primary btn-xs">Manage</a>
-								<?php else:?>
-									<a href="<?php echo RouteManager::createUrl('/project/view/'.$proj['id']);?>" class="btn btn-default btn-xs">View</a>
-								<?php endif;?>
-							</td>
-							<?php endif;?>
 						</tr>
 						<?php $members_user_ids[]=intval($proj['user_id']);?>
 					<?php endforeach;?>

@@ -168,11 +168,14 @@ class Tools extends GUMP{
 		}
 	}
 
-	public function getCountryName($country_code)
+	public function getCountryName($country_code=null)
 	{
-		$countries = $this->getCountries();
+		if($country_code) {
+			$countries = $this->getCountries();
 
-		return $countries[$country_code];
+			return $countries[$country_code];
+		}
+		
 	}
 
 }

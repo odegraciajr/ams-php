@@ -78,8 +78,7 @@ class ProjectController extends Controller
 		elseif( $action == "invite" ) {
 			$this->setPageTitle('My Project > ' . $projInfo['name'] . ' > ' . 'Invite');
 			if( $isProjOwner ) {
-				$param['projMembers'] = $model->getProjectMembers($id);
-				
+								
 				if( isset( $_POST['action_post'] ) && $_POST['action_post'] == "do_project_invite") {
 					if( $_POST['email'] ) {
 						if( is_array( $_POST['email'] ) && count($_POST['email']) > 0 ) {
@@ -111,10 +110,10 @@ class ProjectController extends Controller
 						$param['error_add_member_message'] = $error_msg;
 					}
 				}
+				$param['projMembers'] = $model->getProjectMembers($id);
 			}
 			else {
-				$this->render('noauth',array('type'=>'Project.'));
-				exit;
+				$this->renderEnd('noauth',array('type'=>'Project.'));
 			}
 		}
 		elseif( $action == "messages" ) {

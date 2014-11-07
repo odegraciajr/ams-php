@@ -49,6 +49,25 @@ class Cview
 		echo $output;
 		
 	}
+
+	public function renderEnd($view,$data=null,$return=false)
+	{
+		if ( $this->getViewFile($view) ){
+			throw new Exception("View " . $view . " doesn't exist.");
+		}
+		
+		if(is_array($data))
+			extract($data,EXTR_PREFIX_SAME,'data');
+		else
+			$data=$data;
+		ob_start();
+		require($this->getLayoutFile($this->layout));
+		
+		$output = ob_get_contents();
+		ob_end_clean();
+		echo $output;
+		exit;		
+	}
 	
 	public function loadModel($model=null)
 	{

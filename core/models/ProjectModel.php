@@ -148,10 +148,44 @@ class ProjectModel extends Model
 		return $sth->fetchAll();
 	}
 	
-	public function getAllProjectUsersForInvite($project_id=null){
-		$sth = $this->_db->prepare("SELECT CONCAT(first_name,' ',last_name) AS full_name,email,id FROM users WHERE status<>0");
+	public function getAllProjectUsersForInvite($user_id=null){
+
+		if($user_id===null)
+			$user_id = App::User()->id;
+
+		$validUsers = [];
+
+		$sth = $this->_db->prepare("SELECT organization_id as g_id FROM organization_members WHERE user_id=?");
+		$sth->bindValue(1, $user_id, PDO::PARAM_INT);
 		$sth->execute();
-		return $sth->fetchAll();
+		$org_ids = $sth->fetchAll();
+
+		$organization_ids = [];
+
+		if( is_array($org_ids) && count($org_ids)>0){
+			foreach($org_ids as $id)
+				$organization_ids[] = $id['g_id'];
+		}
+		$in_ids = trim( implode(",", $organization_ids), ",");
+
+		if($in_ids) {
+			$sql = "SELECT CONCAT(u.first_name,' ',u.last_name) AS full_name,u.email,u.id ";
+			$sql .= "FROM organization_members AS om ";
+			$sql .= "INNER JOIN users AS u ON om.user_id=u.id ";
+			$sql .= "WHERE u.status<>0 AND om.organization_id IN(?) ";
+			$sql .= "ORDER BY u.first_name DESC";
+
+
+			$sth = $this->_db->prepare($sql);
+			$sth->bindValue(1, $in_ids, PDO::PARAM_INT);
+			$sth->execute();
+
+			$organization_ids = $sth->fetchAll();
+		}
+		
+		
+		return $organization_ids;
+
 	}
 	
 	public function isProjectMember($user_id, $proj_id)

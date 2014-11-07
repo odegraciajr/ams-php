@@ -62,7 +62,7 @@ class OrganizationController extends Controller
 				
 			}
 			else {
-				$this->render('noauth',array('type'=>'Organization'));
+				$this->renderEnd('noauth',array('type'=>'Organization'));
 			}
 		}
 		else {

@@ -1,8 +1,5 @@
 <div class="content-main">
 	<h1><?php echo App::Tools()->sanitize_text($projInfo['name']);?></h1>
-	<?php if(isset($error_add_member)):?>
-		<div class="alert alert-info" role="alert"><?php echo $error_add_member_message;?></div>
-	<?php endif;?>
 	<div class="breadcrumb-wrap">
 		<ol class="breadcrumb">
 			<li><a href="<?php echo $this->createUrl('/project');?>">My Project</a></li>
