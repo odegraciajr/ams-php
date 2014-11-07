@@ -5,6 +5,27 @@ class Tools extends GUMP{
 	*/
 	public function __construct(){}
 	
+	public function setActiveNav($newValue, $default, $print=true, $trueHtml='class="active"',$falseHtml="")
+	{
+		if($newValue == $default) {
+			if( $print )
+				echo $trueHtml;
+			
+			return $trueHtml;
+		}
+		else {
+			if( $print )
+				echo $falseHtml;
+			
+			return $falseHtml;
+		}
+	}
+
+	public function getCountries()
+	{
+		return include COREPATH . '/data/country.php';
+	}
+
 	public static function toJson($array,$print=true)
 	{
 		if($print) {
@@ -136,4 +157,22 @@ class Tools extends GUMP{
 	public function _autop_newline_preservation_helper( $matches ) {
 		return str_replace("\n", "<WPPreserveNewline />", $matches[0]);
 	}
+
+	public function getCountriesOptionHTML($active=null)
+	{
+		$countries = $this->getCountries();
+
+		foreach($countries as $key=>$country){
+
+			echo '<option '.$this->setActiveNav($key,$active,true,'selected="selected"').' value="'.$key.'">'.$country.'</option>';
+		}
+	}
+
+	public function getCountryName($country_code)
+	{
+		$countries = $this->getCountries();
+
+		return $countries[$country_code];
+	}
+
 }

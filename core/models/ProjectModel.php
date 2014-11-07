@@ -148,8 +148,7 @@ class ProjectModel extends Model
 		return $sth->fetchAll();
 	}
 	
-		public function getAllProjectUsersForInvite($project_id=null){
-
+	public function getAllProjectUsersForInvite($project_id=null){
 		$sth = $this->_db->prepare("SELECT CONCAT(first_name,' ',last_name) AS full_name,email,id FROM users WHERE status<>0");
 		$sth->execute();
 		return $sth->fetchAll();

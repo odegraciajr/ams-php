@@ -20,4 +20,9 @@ class Helper
 			return $falseHtml;
 		}
 	}
+
+	public function getCountries()
+	{
+		return include COREPATH . '/data/country.php';
+	}
 }

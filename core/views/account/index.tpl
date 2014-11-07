@@ -55,7 +55,7 @@
 					<div class="form-group">
 						<label class="col-sm-4 control-label text-left">Country</label>
 						<div class="col-sm-8">
-						  <p class="form-control-static"><?php echo App::User()->country;?></p>
+						  <p class="form-control-static"><?php echo App::Tools()->getCountryName(App::User()->country);?></p>
 						</div>
 					</div>
 					<div class="form-group">

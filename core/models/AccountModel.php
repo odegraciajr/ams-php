@@ -63,6 +63,28 @@ class AccountModel extends Model
 			return false;
 		}
 	}
+
+	public function updateUser($user_id,$data)
+	{
+		if($user_id) {
+			$first_name = $data['first_name'];
+			$last_name = $data['last_name'];
+			$address = $data['address'];
+			$city = $data['city'];
+			$state = $data['state'];
+			$postal_code = $data['postal_code'];
+			$country = $data['country'];
+			$phone = $data['phone'];
+
+			$sql = "UPDATE users SET first_name=?,last_name=?,address=?,city=?,state=?,postal_code=?,country=?,phone=? WHERE id=?";
+			$update = $this->_db->prepare($sql);
+			return $update->execute(array($first_name,$last_name,$address,$city,$state,$postal_code,$country,$phone,$user_id));
+		}
+		
+		return false;
+
+
+	}
 	
 	public function inviteNewUser($email, $type=2)
 	{

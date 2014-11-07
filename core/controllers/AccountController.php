@@ -12,10 +12,9 @@ class AccountController extends Controller
 	
 	public function indexAction()
 	{
+		$this->loginGuest();
+
 		$this->activeNav = "profile";
-		
-		if( App::User()->isGuest )
-			$this->redirect('/account/login');
 		
 		$this->setPageTitle("Profile");
 		$accModel = $this->loadmodel('AccountModel');
@@ -34,12 +33,35 @@ class AccountController extends Controller
 	{
 		$this->activeNav = "profile";
 		
-		if( App::User()->isGuest )
-			$this->redirect('/account/login');
+		$this->loginGuest();
+
+		$params = [
+			'post' => '',
+			'error' => false
+		];
+		$model = $this->loadModel();
+
+		if( isset( $_POST['action_post'] ) && $_POST['action_post'] == "do_edit_profile" ) {
+			$tools = App::Tools();
+
+			$post = $tools->sanitize($_POST);
+			$update = $model->updateUser(App::User()->id,$post);
+
+			if( $update ){
+				$params['error'] = true;
+				$params['error_type'] = 'info';
+				$params['error_message'] = 'Account updated!';
+			}
+			else {
+				$params['error'] = true;
+				$params['error_type'] = 'danger';
+				$params['error_message'] = 'Failed on updating your account. Please check your all fields and try again.';
+			}
+		}
 			
 		$this->setPageTitle("Edit Profile");
-		
-		$this->render('edit');
+		$params['userInfo'] = (object)$model->getUserData();
+		$this->render('edit',$params);
 	}
 	
 	public function loginAction()
