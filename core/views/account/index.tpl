@@ -1,10 +1,5 @@
 <div class="content-main">
 	<h1>Profile</h1>
-	<div class="breadcrumb-wrap">
-		<ol class="breadcrumb">
-			<li class="active">Profile</li>
-		</ol>
-	</div>
 	<div class="panel panel-default">
 		<!-- Default panel contents -->
 		<div class="panel-body">
