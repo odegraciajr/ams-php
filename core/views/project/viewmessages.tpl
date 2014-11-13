@@ -15,6 +15,7 @@
 			<li><a href="<?php echo $this->createUrl('/project/view/'.$id)?>">Main</a></li>
 			<li><a href="<?php echo $this->createUrl('/project/view/'.$id.'/members')?>">Members</a></li>
 			<li class="active"><a href="<?php echo $this->createUrl('/project/view/'.$id.'/messages')?>">Messages</a></li>
+			<li><a href="<?php echo $this->createUrl('/project/view/'.$id.'/activity')?>">Activity</a></li>
 			<?php if($userRole >= 8):?>
 				<li><a href="<?php echo $this->createUrl('/project/view/'.$id.'/invite')?>">Invite</a></li>
 			<?php endif;?>
@@ -24,7 +25,7 @@
 		<div class="panel-body">
 			<?php if($userRole >= 8):?>
 				<p class="text-right">
-					<a href="<?php echo $this->createUrl('/project/view/'.$id.'/newthread')?>" class="btn btn-primary btn-lg">Start new thread</a>
+					<a href="<?php echo $this->createUrl('/project/view/'.$id.'/newthread')?>" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-plus"></span> Start new thread</a>
 				</p>
 			<?php endif;?>
 			<div class="list-messages">

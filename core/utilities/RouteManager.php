@@ -26,8 +26,8 @@ class RouteManager extends CoreRouter
 			array('GET|POST', '/[a:controller]/[a:action]/[i:pid]/', 'Controller@Action#pid'),
 			array('GET|POST', '/[a:controller]/[a:action]/[a:pstring]', 'Controller@Action#pstring'),
 			array('GET|POST', '/[a:controller]/[a:action]/[a:pstring]/', 'Controller@Action#pstring'),
-			array('GET|POST', '/[organization|project:controller]/[view:action]/[i:pid]/[newthread|messages|members|invite:subaction]', 'Organization@View#Id#Subaction'),
-			array('GET|POST', '/[organization|project:controller]/[view:action]/[i:pid]/[newthread|messages|members|invite:subaction]/', 'Organization@View#Id#Subaction'),
+			array('GET|POST', '/[organization|project:controller]/[view:action]/[i:pid]/[newactivity|activity|newthread|messages|members|invite:subaction]', 'Organization@View#Id#Subaction'),
+			array('GET|POST', '/[organization|project:controller]/[view:action]/[i:pid]/[newactivity|activity|newthread|messages|members|invite:subaction]/', 'Organization@View#Id#Subaction'),
 			array('GET|POST', '/[a:controller]/[a:action]/[i:pid]/[i:pid2]', 'Controller@Action#pid#pid2'),
 			array('GET|POST', '/[a:controller]/[a:action]/[i:pid]/[i:pid2]/', 'Controller@Action#pid#pid2'),
 		));
@@ -62,7 +62,8 @@ class RouteManager extends CoreRouter
 				case 'Controller@Action':
 					if( is_callable( array($this->controller, $this->action) ) ) {
 						$load = new $this->controller();
-						$load->{$this->action}();
+						if($load->beforeAction($this->action))
+							$load->{$this->action}();
 					}
 					else {
 						self::set404();
@@ -71,7 +72,8 @@ class RouteManager extends CoreRouter
 				case 'Controller@Action#pid':
 					if( is_callable( array($this->controller, $this->action) ) ) {
 						$load = new $this->controller();
-						$load->{$this->action}($pid);
+						if($load->beforeAction($this->action))
+							$load->{$this->action}($pid);
 					}
 					else {
 						self::set404();
@@ -83,7 +85,8 @@ class RouteManager extends CoreRouter
 						
 					if( is_callable( array($this->controller, $this->action) ) ) {
 						$load = new $this->controller();
-						$load->{$this->action}($pid,$subaction);
+						if($load->beforeAction($this->action))
+							$load->{$this->action}($pid,$subaction);
 					}
 					else {
 						self::set404();
@@ -93,7 +96,8 @@ class RouteManager extends CoreRouter
 											
 					if( is_callable( array($this->controller, $this->action) ) ) {
 						$load = new $this->controller();
-						$load->{$this->action}($pid,$pid2);
+						if($load->beforeAction($this->action))
+							$load->{$this->action}($pid,$pid2);
 					}
 					else {
 						self::set404();
@@ -102,7 +106,8 @@ class RouteManager extends CoreRouter
 				case 'Controller@Action#pstring':
 					if( is_callable( array($this->controller, $this->action) ) ) {
 						$load = new $this->controller();
-						$load->{$this->action}($pstring);
+						if($load->beforeAction($this->action))
+							$load->{$this->action}($pstring);
 					}
 					else {
 						self::set404();

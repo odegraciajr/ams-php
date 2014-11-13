@@ -83,3 +83,81 @@ CREATE TABLE IF NOT EXISTS `messages` (
 	status TINYINT(1) DEFAULT 1,
 	INDEX(user_id),INDEX(thread_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+/**
+*Activity
+*/
+
+CREATE TABLE IF NOT EXISTS `dss`.`activity` (
+  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(50) NOT NULL,
+  `description` LONGTEXT NULL,
+  `project_id` INT(10) NOT NULL,
+  `owner_id` BIGINT(20) NOT NULL,
+  `type_id` INT(5) UNSIGNED NOT NULL,
+  `parent_activity` INT(10) UNSIGNED NULL,
+  `requestor` BIGINT(20) UNSIGNED NULL,
+  `request_date` DATETIME NULL,
+  `estimate_duration` DATETIME NULL,
+  `due_date` DATETIME NULL,
+  `due_time` DATETIME NULL,
+  `comment` TINYTEXT NULL,
+  `priority` TINYINT(2) UNSIGNED NULL,
+  `status` TINYINT(2) NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX (`project_id` ASC),
+  INDEX (`owner_id` ASC),
+  INDEX (`type_id` ASC)
+  )ENGINE = InnoDB
+
+  CREATE TABLE IF NOT EXISTS `dss`.`activity_assignment` (
+  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `users_id` BIGINT(20) NOT NULL,
+  `activity_id` INT(10) UNSIGNED NOT NULL,
+  `status` TINYINT(2) NULL DEFAULT 1,
+  PRIMARY KEY (`id`),
+  INDEX (`users_id` ASC),
+  INDEX (`activity_id` ASC)
+ )ENGINE = InnoDB
+
+ CREATE TABLE IF NOT EXISTS `dss`.`activity_predecessor` (
+  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `main_activity` INT(10) NULL,
+  `predecessor_id` INT(10) UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX (`predecessor_id` ASC)
+)
+ENGINE = InnoDB
+
+CREATE TABLE IF NOT EXISTS `dss`.`activity_type` (
+  `id` INT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(50) NULL,
+  `description` TINYTEXT NULL,
+  `status` TINYINT(2) UNSIGNED NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB
+
+INSERT INTO `activity_type`(`name`, `description`, `status`) VALUES ('Meeting','Meeting activty',1);
+INSERT INTO `activity_type`(`name`, `description`, `status`) VALUES ('Milestone','Milestone activty',1);
+INSERT INTO `activity_type`(`name`, `description`, `status`) VALUES ('Task','Task activty',1);
+
+CREATE TABLE IF NOT EXISTS `dss`.`activity_type_meeting` (
+  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `organizer_user_id` BIGINT(20) NOT NULL,
+  `activity_id` INT(10) UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX (`organizer_user_id` ASC),
+  INDEX (`activity_id` ASC)
+  )
+ENGINE = InnoDB
+
+CREATE TABLE IF NOT EXISTS `dss`.`meeting_attendees` (
+  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `status` TINYINT(2) UNSIGNED NULL,
+  `activity_meeting_id` INT(10) UNSIGNED NOT NULL,
+  `user_id` BIGINT(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX (`activity_meeting_id` ASC),
+  INDEX (`user_id` ASC)
+)
+ENGINE = InnoDB

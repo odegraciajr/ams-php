@@ -15,7 +15,8 @@ class AccountModel extends Model
 	const INVITE_TYPE_PROJECT = 3;
 	const STATUS_INVITED 	= 3;
 	
-	public function createNewUser(){
+	public function createNewUser()
+	{
 		$data = array_map('trim', $_POST);
 		
 		if( is_array( $data ) && count( $data ) > 0 ){

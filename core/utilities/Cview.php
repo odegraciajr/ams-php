@@ -3,9 +3,20 @@
 class Cview
 {
 	protected $viewFile;
+	protected $_scripts;
+	protected $_styles;
 	private $_pageTitle;
 	
+	public function run($actionID){
+		$this->beforeAction($actionID);
+	}
+
 	protected function beforeRender($view)
+	{
+		return true;
+	}
+
+	protected function beforeAction($action)
 	{
 		return true;
 	}
@@ -30,7 +41,56 @@ class Cview
 		else
 			return false;
 	}
-	
+	public function add_script($url,$footer=false,$ver=null)
+  	{
+  		$new_script = null;
+		$position = 'head';
+
+  		if( $footer===true )
+			$position = 'footer';
+
+		if( $ver )
+			$url = '?ver=' . $ver;
+
+  		$this->_scripts[$position][] = $url;
+  	}
+
+  	public function get_scripts($position='head')
+  	{
+  		if(!isset($this->_scripts[$position]))
+  			return;
+
+  		$script_part = $this->_scripts[$position];
+
+  		if( is_array($script_part) && count($script_part)>0){
+  			foreach($script_part as $url){
+  				echo '<script src="'.$url.'"></script>' . "\r\n";
+  			}
+  		}
+  	}
+
+  	public function add_style($url,$ver=null)
+  	{
+  		$new_script = null;
+
+		if( $ver )
+			$url = '?ver=' . $ver;
+
+  		$this->_styles[] = $url;
+  	}
+
+  	public function get_styles()
+  	{
+
+  		$style_part = $this->_styles;
+
+  		if( is_array($style_part) && count($style_part)>0){
+  			foreach($style_part as $url){
+  				echo '<link href="'.$url.'" rel="stylesheet">' . "\r\n";
+  			}
+  		}
+  	}
+
 	public function render($view,$data=null,$return=false)
 	{
 		if ( $this->getViewFile($view) ){
@@ -164,5 +224,23 @@ class Cview
 			$this->setReturnUrl();
 			$this->redirect($this->createUrl( '/account/login'));
 		}
+	}
+
+	public function errorMessage($error=false,$type='info',$message, $print=true){
+		if( !$error )
+			return;
+
+		$html = '<div class="alert alert-'.$type.'" role="alert">';
+		$html .= '<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>';
+		$html .=$message.'</div>';
+
+		if($print)
+			echo $html;
+		else
+			return $html;
+	}
+
+	public function getProfileURL($user_id){
+		return RouteManager::createUrl('/account/userprofile/'.$user_id);
 	}
 }

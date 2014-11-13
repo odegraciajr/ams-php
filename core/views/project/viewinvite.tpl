@@ -12,6 +12,7 @@
 			<li><a href="<?php echo $this->createUrl('/project/view/'.$id)?>">Main</a></li>
 			<li><a href="<?php echo $this->createUrl('/project/view/'.$id.'/members')?>">Members</a></li>
 			<li><a href="<?php echo $this->createUrl('/project/view/'.$id.'/messages/');?>">Messages</a></li>
+			<li><a href="<?php echo $this->createUrl('/project/view/'.$id.'/activity')?>">Activity</a></li>
 			<li class="active"><a href="<?php echo $this->createUrl('/project/view/'.$id.'/invite')?>">Invite</a></li>
 		</ul>
 	</div>

@@ -47,6 +47,7 @@ class ProjectController extends Controller
 		$param = [
 			'id' => $id,
 			'error_message' => false,
+			'activity_types' => null
 		];
 
 		$model = $this->loadModel('ProjectModel');
@@ -141,7 +142,33 @@ class ProjectController extends Controller
 				exit;
 			}
 			$this->setPageTitle('My Project > ' . $projInfo['name'] . ' > ' . 'Messages > ' . 'New Thread');
-		}	
+		}
+		elseif( $action == "newactivity" ) {
+			$this->add_style('/assets/css/bootstrap-datetimepicker.min.css');
+			$this->add_script('/assets/js/moment.js',true);
+			$this->add_script('/assets/js/bootstrap-datetimepicker.min.js',true);
+
+
+			if( isset( $_POST['action_post'] ) && $_POST['action_post'] == "do_newactivity") {
+				if( $_POST['name'] && $_POST['type_id'] ) {
+					$activity_id = $this->loadModel('ActivityModel')->addActivity($id);
+					if($activity_id)
+							$param['error_message'] = 'New Activty created. <a href="'.$this->createUrl('/project/activity/'.$id.'/'.$activity_id).'">Click here to view.</a>';
+				}
+				else {
+					$param['error_message'] = 'All fields are required.';
+				}
+			}
+			$param['projMembers'] = $model->getProjectMembers($id);
+			$param['activity_types'] = $this->loadModel('ActivityModel')->getActivityTypes();
+
+			$this->setPageTitle('My Project > ' . $projInfo['name'] . ' > ' . 'New Activity');
+		}
+		elseif( $action == "activity" ) {
+			$param['activities'] = $this->loadModel('ActivityModel')->getProjectActivity($id);
+			
+			$this->setPageTitle('My Project > ' . $projInfo['name'] . ' > ' . 'Activity');
+		}
 		else {
 			$this->setPageTitle('My Project > ' . $projInfo['name']);
 		}

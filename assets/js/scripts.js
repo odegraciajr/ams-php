@@ -38,5 +38,40 @@ jQuery(document).ready(function($){
 			}
 		});
 	}
-	
+	if(jQuery().datetimepicker) {
+		$('#estimate_duration_dummy').datetimepicker({
+			format: 'HH:mm',
+			pickDate: false,
+			pickSeconds: false,
+			pick12HourFormat: false
+		});
+		$('#due_date_dummy,#request_date_dummy').datetimepicker({
+			pickTime:false,
+			useCurrent: true
+		});
+
+		$('#due_time_dummy').datetimepicker({
+			pickDate: false
+		});
+
+		$("#estimate_duration_dummy").on("dp.change",function (e) {
+		   var ndate = e.date;
+		   $("#estimate_duration").val(ndate.format("YYYY-MM-DD HH:mm:ss"));
+		});
+
+		$("#due_date_dummy").on("dp.change",function (e) {
+		   var ndate = e.date;
+		   $("#due_date").val(ndate.format("YYYY-MM-DD HH:mm:ss"));
+		});
+
+		$("#due_time_dummy").on("dp.change",function (e) {
+		   var ndate = e.date;
+		   $("#due_time").val(ndate.format("YYYY-MM-DD HH:mm:ss"));
+		});
+
+		$("#request_date_dummy").on("dp.change",function (e) {
+		   var ndate = e.date;
+		   $("#request_date").val(ndate.format("YYYY-MM-DD 00:00:00"));
+		});
+	}
 });
