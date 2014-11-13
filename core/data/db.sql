@@ -88,7 +88,7 @@ CREATE TABLE IF NOT EXISTS `messages` (
 *Activity
 */
 
-CREATE TABLE IF NOT EXISTS `dss`.`activity` (
+CREATE TABLE IF NOT EXISTS `activity` (
   `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(50) NOT NULL,
   `description` LONGTEXT NULL,
@@ -110,7 +110,7 @@ CREATE TABLE IF NOT EXISTS `dss`.`activity` (
   INDEX (`type_id` ASC)
   )ENGINE = InnoDB
 
-  CREATE TABLE IF NOT EXISTS `dss`.`activity_assignment` (
+  CREATE TABLE IF NOT EXISTS `activity_assignment` (
   `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `users_id` BIGINT(20) NOT NULL,
   `activity_id` INT(10) UNSIGNED NOT NULL,
@@ -120,7 +120,7 @@ CREATE TABLE IF NOT EXISTS `dss`.`activity` (
   INDEX (`activity_id` ASC)
  )ENGINE = InnoDB
 
- CREATE TABLE IF NOT EXISTS `dss`.`activity_predecessor` (
+ CREATE TABLE IF NOT EXISTS `activity_predecessor` (
   `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `main_activity` INT(10) NULL,
   `predecessor_id` INT(10) UNSIGNED NOT NULL,
@@ -129,7 +129,7 @@ CREATE TABLE IF NOT EXISTS `dss`.`activity` (
 )
 ENGINE = InnoDB
 
-CREATE TABLE IF NOT EXISTS `dss`.`activity_type` (
+CREATE TABLE IF NOT EXISTS `activity_type` (
   `id` INT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(50) NULL,
   `description` TINYTEXT NULL,
@@ -141,7 +141,7 @@ INSERT INTO `activity_type`(`name`, `description`, `status`) VALUES ('Meeting','
 INSERT INTO `activity_type`(`name`, `description`, `status`) VALUES ('Milestone','Milestone activty',1);
 INSERT INTO `activity_type`(`name`, `description`, `status`) VALUES ('Task','Task activty',1);
 
-CREATE TABLE IF NOT EXISTS `dss`.`activity_type_meeting` (
+CREATE TABLE IF NOT EXISTS `activity_type_meeting` (
   `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `organizer_user_id` BIGINT(20) NOT NULL,
   `activity_id` INT(10) UNSIGNED NOT NULL,
@@ -151,7 +151,7 @@ CREATE TABLE IF NOT EXISTS `dss`.`activity_type_meeting` (
   )
 ENGINE = InnoDB
 
-CREATE TABLE IF NOT EXISTS `dss`.`meeting_attendees` (
+CREATE TABLE IF NOT EXISTS `meeting_attendees` (
   `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `status` TINYINT(2) UNSIGNED NULL,
   `activity_meeting_id` INT(10) UNSIGNED NOT NULL,
@@ -160,4 +160,4 @@ CREATE TABLE IF NOT EXISTS `dss`.`meeting_attendees` (
   INDEX (`activity_meeting_id` ASC),
   INDEX (`user_id` ASC)
 )
-ENGINE = InnoDB
+ENGINE = InnoDB;
