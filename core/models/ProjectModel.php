@@ -42,14 +42,16 @@ class ProjectModel extends Model
 			$owner_id = App::User()->id;
 			$name = $data['name'];
 			$description = $data['description'];
+			$organization = $data['organization'];
 			
-			$sql = "INSERT INTO project(name, description,user_id,date_created) ";
-			$sql .="VALUES(?,?,?,NOW())";
+			$sql = "INSERT INTO project(name, description,user_id,organization_id,date_created) ";
+			$sql .="VALUES(?,?,?,?,NOW())";
 			
 			$newproj = $this->_db->prepare($sql);
 			$newproj->bindValue(1, $name, PDO::PARAM_STR);
 			$newproj->bindValue(2, $description, PDO::PARAM_STR);
 			$newproj->bindValue(3, $owner_id, PDO::PARAM_INT);
+			$newproj->bindValue(4, $organization, PDO::PARAM_INT);
 			$newproj->execute();
 			
 			$proj_id = $this->_db->lastInsertId();
@@ -115,6 +117,16 @@ class ProjectModel extends Model
 		return $sth->fetchAll();
 	}
 	
+	public function getOrganizationProjects($org_id)
+	{
+
+		$sth = $this->_db->prepare("SELECT p.*, CONCAT(u.first_name,' ',u.last_name) AS owner_name FROM project AS p INNER JOIN users AS u ON p.user_id=u.id WHERE organization_id = ?");
+		$sth->bindValue(1, $org_id, PDO::PARAM_INT);
+		$sth->execute();
+		
+		return $sth->fetchAll();
+	}
+
 	public function getProjectInfo($id)
 	{
 		$sql = "SELECT * FROM project WHERE id=?";

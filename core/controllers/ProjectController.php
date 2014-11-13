@@ -25,6 +25,7 @@ class ProjectController extends Controller
 		$this->loginGuest();
 		
 		$param = [];
+		$param['myOrg'] = $this->loadModel('OrganizationModel')->getOwnedOrganizations();
 		
 		if( isset( $_POST['action_post'] ) && $_POST['action_post'] == "do_project" ) {
 			if( isset( $_POST['name'] ) && trim( $_POST['name'] ) ) {

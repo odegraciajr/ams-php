@@ -26,8 +26,8 @@ class RouteManager extends CoreRouter
 			array('GET|POST', '/[a:controller]/[a:action]/[i:pid]/', 'Controller@Action#pid'),
 			array('GET|POST', '/[a:controller]/[a:action]/[a:pstring]', 'Controller@Action#pstring'),
 			array('GET|POST', '/[a:controller]/[a:action]/[a:pstring]/', 'Controller@Action#pstring'),
-			array('GET|POST', '/[organization|project:controller]/[view:action]/[i:pid]/[newactivity|activity|newthread|messages|members|invite:subaction]', 'Organization@View#Id#Subaction'),
-			array('GET|POST', '/[organization|project:controller]/[view:action]/[i:pid]/[newactivity|activity|newthread|messages|members|invite:subaction]/', 'Organization@View#Id#Subaction'),
+			array('GET|POST', '/[organization|project:controller]/[view:action]/[i:pid]/[projects|newactivity|activity|newthread|messages|members|invite:subaction]', 'Organization@View#Id#Subaction'),
+			array('GET|POST', '/[organization|project:controller]/[view:action]/[i:pid]/[projects|newactivity|activity|newthread|messages|members|invite:subaction]/', 'Organization@View#Id#Subaction'),
 			array('GET|POST', '/[a:controller]/[a:action]/[i:pid]/[i:pid2]', 'Controller@Action#pid#pid2'),
 			array('GET|POST', '/[a:controller]/[a:action]/[i:pid]/[i:pid2]/', 'Controller@Action#pid#pid2'),
 		));

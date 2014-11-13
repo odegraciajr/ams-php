@@ -32,6 +32,7 @@ class OrganizationModel extends Model
 		
 		return $statusArray[$status];
 	}
+	
 	public function createOrganization( $owner_id=null, $name=null, $desc=null )
 	{
 		
@@ -106,6 +107,26 @@ class OrganizationModel extends Model
 		$sql .= "INNER JOIN organization AS o ";
 		$sql .= "ON om.organization_id=o.id ";
 		$sql .= "WHERE om.user_id=? ";
+		$sql .= "ORDER BY om.role_id DESC";
+		
+		$sth = $this->_db->prepare($sql);
+		$sth->bindValue(1, $user_id, PDO::PARAM_INT);
+		$sth->execute();
+		
+		return $sth->fetchAll();
+	}
+
+	public function getOwnedOrganizations($user_id=null)
+	{
+		if(!$user_id) {
+			$user_id = App::User()->id;
+		}
+		
+		$sql = "SELECT o.id,o.name,o.description,om.role_id,om.date_joined ";
+		$sql .= "FROM organization_members AS om ";
+		$sql .= "INNER JOIN organization AS o ";
+		$sql .= "ON om.organization_id=o.id ";
+		$sql .= "WHERE om.user_id=? AND om.role_id = 9 ";
 		$sql .= "ORDER BY om.role_id DESC";
 		
 		$sth = $this->_db->prepare($sql);

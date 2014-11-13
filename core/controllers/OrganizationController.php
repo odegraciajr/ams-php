@@ -104,6 +104,9 @@ class OrganizationController extends Controller
 				exit;
 			}
 		}
+		elseif( $action == "projects" ) {
+				$param['projects'] = $this->loadModel('ProjectModel')->getOrganizationProjects($id);
+		}
 		else {
 			$this->setPageTitle('My Organization > ' . $orgInfo['name']);
 		}

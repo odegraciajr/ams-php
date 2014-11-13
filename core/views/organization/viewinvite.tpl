@@ -14,6 +14,7 @@
 		<ul class="nav nav-tabs">
 			<li><a href="<?php echo $this->createUrl('/organization/view/'.$id)?>">Main</a></li>
 			<li><a href="<?php echo $this->createUrl('/organization/view/'.$id.'/members')?>">Members</a></li>
+			<li><a href="<?php echo $this->createUrl('/organization/view/'.$id.'/projects')?>">Projects</a></li>
 			<li class="active"><a href="<?php echo $this->createUrl('/organization/view/'.$id.'/invite')?>">Invite</a></li>
 		</ul>
 	</div>

@@ -26,6 +26,19 @@
 				</div>
 			  </div>
 			  <div class="form-group">
+				<label for="organization" class="col-sm-2 control-label">Organization</label>
+				<div class="col-sm-10">
+					<select class="form-control" name="organization" id="organization">
+						<option value="0">None</option>
+						<?php if(is_array($myOrg) && count($myOrg)> 0):?>
+							<?php foreach( $myOrg as $org ):?>
+								<option value="<?php echo $org['id'];?>"><?php echo $org['name'];?></option>
+							<?php endforeach;?>
+						<?php endif;?>
+					</select>
+				</div>
+			  </div>
+			  <div class="form-group">
 				<div class="col-sm-offset-2 col-sm-10">
 					<input type="hidden" value="do_project" name="action_post"/>
 					<p class="text-right reset">
