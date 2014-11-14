@@ -76,6 +76,23 @@
 #messages .message-body{
 	margin: 0;
 }
+.assigned_users_list{
+	
+}
+.assigned_users_list ul{
+	margin:0;
+	padding:0;
+}
+.assigned_users_list ul li{
+	float: left;
+	list-style: outside none none;
+}
+.assigned_users_list ul li .sep{
+	padding-right: 5px;
+}
+.assigned_users_list ul li:last-child .sep{
+	display: none;
+}
 .badge.posted-date{
 	border-radius:5px;
 }

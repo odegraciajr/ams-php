@@ -1,5 +1,5 @@
 <div id="messages" class="content-main">
-	<h1>Messages</h1>
+	<h1>Activity</h1>
 	<?php if(isset($error_add_member)):?>
 		<div class="alert alert-info" role="alert"><?php echo $error_add_member_message;?></div>
 	<?php endif;?>
@@ -40,6 +40,7 @@
 								<th>Owner</th>
 								<th>Requestor</th>
 								<th>Request Date</th>
+								<th></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -52,6 +53,9 @@
 													echo '<span class="label label-primary">Active</span>';
 												}
 												else if($act['status']==2){
+													echo '<span class="label label-success">Completed</span>';
+												}
+												else if($act['status']==0){
 													echo '<span class="label label-default">Pending</span>';
 												}
 												else{
@@ -73,6 +77,7 @@
 											</a>
 										</td>
 										<td><?php echo App::Tools()->sanitize_text(date("d/m/Y",strtotime($act['request_date'])));?></td>
+										<td><a class="btn btn-primary btn-xs" href="<?php echo $this->createUrl('/project/activity/'.$id.'/'.$act['id'])?>">View</a></td>
 									</tr>
 								<?php endforeach;?>
 							<?php else:?>

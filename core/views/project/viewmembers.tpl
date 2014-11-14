@@ -1,5 +1,5 @@
 <div class="content-main">
-	<h1><?php echo App::Tools()->sanitize_text($projInfo['name']);?></h1>
+	<h1>Members</h1>
 	<div class="breadcrumb-wrap">
 		<ol class="breadcrumb">
 			<li><a href="<?php echo $this->createUrl('/project');?>">My Project</a></li>

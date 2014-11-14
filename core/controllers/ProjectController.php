@@ -24,20 +24,20 @@ class ProjectController extends Controller
 	{
 		$this->loginGuest();
 		
-		$param = [];
-		$param['myOrg'] = $this->loadModel('OrganizationModel')->getOwnedOrganizations();
+		$params = [];
+		$params['myOrg'] = $this->loadModel('OrganizationModel')->getOwnedOrganizations();
 		
 		if( isset( $_POST['action_post'] ) && $_POST['action_post'] == "do_project" ) {
 			if( isset( $_POST['name'] ) && trim( $_POST['name'] ) ) {
 				$newProj = $this->loadModel('ProjectModel')->createProject();
 				if($newProj)
-					$param = array('error_message' => 'Project Created. <a href="'.$this->createUrl('/project/view/'.$newProj).'">Click here to view.</a>');
+					$params = array('error_message' => 'Project Created. <a href="'.$this->createUrl('/project/view/'.$newProj).'">Click here to view.</a>');
 			}
 		}
 		
 		$this->setPageTitle('Project > Create');
 
-		$this->render('create',$param);
+		$this->render('create',$params);
 	}
 	
 	
@@ -45,7 +45,7 @@ class ProjectController extends Controller
 	{
 		$this->loginGuest();
 		
-		$param = [
+		$params = [
 			'id' => $id,
 			'error_message' => false,
 			'activity_types' => null
@@ -58,11 +58,11 @@ class ProjectController extends Controller
 		
 		if( $projInfo ) {
 			if($model->isProjectMember(App::User()->id,$id)) {
-				$param['projInfo'] = $projInfo;
-				$param['isProjOwner'] = $isProjOwner;
-				$param['new_user_invite'] = false;
-				$param['email_value'] = '';
-				$param['userRole'] = $userRole;
+				$params['projInfo'] = $projInfo;
+				$params['isProjOwner'] = $isProjOwner;
+				$params['new_user_invite'] = false;
+				$params['email_value'] = '';
+				$params['userRole'] = $userRole;
 				//$param['membersCount'] = $model->getOrgMembersCount($id);
 			}
 			else {
@@ -75,7 +75,7 @@ class ProjectController extends Controller
 		
 		if( $action == "members" ) {
 			$this->setPageTitle('My Project > ' . $projInfo['name'] . ' > ' . 'Members');
-			$param['projMembers'] = $model->getProjectMembers($id);
+			$params['projMembers'] = $model->getProjectMembers($id);
 		}
 		elseif( $action == "invite" ) {
 			$this->setPageTitle('My Project > ' . $projInfo['name'] . ' > ' . 'Invite');
@@ -92,7 +92,7 @@ class ProjectController extends Controller
 							$invite = $model->processInvite($_POST['email'],$id);
 						}
 						
-						$param['error_add_member'] = true;
+						$params['error_add_member'] = true;
 
 						if( $invite === ProjectModel::USER_ALREADY_MEMBER ) {
 							$error_msg = "User already a member.";
@@ -109,10 +109,10 @@ class ProjectController extends Controller
 							$error_msg = "Invitation sent!";
 						}
 
-						$param['error_add_member_message'] = $error_msg;
+						$params['error_add_member_message'] = $error_msg;
 					}
 				}
-				$param['projMembers'] = $model->getProjectMembers($id);
+				$params['projMembers'] = $model->getProjectMembers($id);
 			}
 			else {
 				$this->renderEnd('noauth',array('type'=>'Project.'));
@@ -120,7 +120,7 @@ class ProjectController extends Controller
 		}
 		elseif( $action == "messages" ) {
 			$threads = $model->getThreads($id);
-			$param['threads'] = $threads;
+			$params['threads'] = $threads;
 			$this->setPageTitle('My Project > ' . $projInfo['name'] . ' > ' . 'Messages');
 		}
 		elseif( $action == "newthread" ) {
@@ -131,10 +131,10 @@ class ProjectController extends Controller
 						
 						$thread_id = $model->createThread($id, $_POST['subject'], $_POST['message']);
 						if($thread_id)
-							$param['error_message'] = 'New thread created. <a href="'.$this->createUrl('/project/messages/'.$id.'/'.$thread_id).'">Click here to view.</a>';
+							$params['error_message'] = 'New thread created. <a href="'.$this->createUrl('/project/messages/'.$id.'/'.$thread_id).'">Click here to view.</a>';
 					}
 					else {
-						$param['error_message'] = 'All fields are required.';
+						$params['error_message'] = 'All fields are required.';
 					}
 				}
 			}
@@ -154,33 +154,34 @@ class ProjectController extends Controller
 				if( $_POST['name'] && $_POST['type_id'] ) {
 					$activity_id = $this->loadModel('ActivityModel')->addActivity($id);
 					if($activity_id)
-							$param['error_message'] = 'New Activty created. <a href="'.$this->createUrl('/project/activity/'.$id.'/'.$activity_id).'">Click here to view.</a>';
+						$params['error_message'] = 'New Activty created. <a href="'.$this->createUrl('/project/activity/'.$id.'/'.$activity_id).'">Click here to view.</a>';
 				}
 				else {
-					$param['error_message'] = 'All fields are required.';
+					$params['error_message'] = 'All fields are required.';
 				}
 			}
-			$param['projMembers'] = $model->getProjectMembers($id);
-			$param['activity_types'] = $this->loadModel('ActivityModel')->getActivityTypes();
+			$params['activities'] = $this->loadModel('ActivityModel')->getProjectActivity($id);
+			$params['projMembers'] = $model->getProjectMembers($id);
+			$params['activity_types'] = $this->loadModel('ActivityModel')->getActivityTypes();
 
 			$this->setPageTitle('My Project > ' . $projInfo['name'] . ' > ' . 'New Activity');
 		}
 		elseif( $action == "activity" ) {
-			$param['activities'] = $this->loadModel('ActivityModel')->getProjectActivity($id);
+			$params['activities'] = $this->loadModel('ActivityModel')->getProjectActivity($id);
 			
 			$this->setPageTitle('My Project > ' . $projInfo['name'] . ' > ' . 'Activity');
 		}
 		else {
 			$this->setPageTitle('My Project > ' . $projInfo['name']);
 		}
-		$this->render('view'.$action,$param);
+		$this->render('view'.$action,$params);
 	}
 	
 	public function messagesAction($proj_id,$thread_id)
 	{
 		$this->loginGuest();
 		
-		$param = [
+		$params = [
 			'id' => $proj_id,
 			'error_message' => false,
 		];
@@ -197,30 +198,52 @@ class ProjectController extends Controller
 					$model->addComment($thread_id, $_POST['comment']);
 				}
 				else {
-					$param['error_message'] = 'Comment should not be empty.';
+					$params['error_message'] = 'Comment should not be empty.';
 				}
 			}
 			
 			if($thread){
-				$param['projInfo'] = $model->getProjectInfo($proj_id);
-				$param['isThreadOwner'] = intval( $thread ) == App::User()->id ? true :false;
-				$param['isProjOwner'] = $model->isProjectOwner($proj_id);
-				$param['thread'] = $thread;
-				$param['comments'] = $model->getComments($thread_id,$proj_id);
-				$param['comment_count'] = $model->getCommentCount($thread_id);
-				$param['userRole'] = $userRole;
+				$params['projInfo'] = $model->getProjectInfo($proj_id);
+				$params['isThreadOwner'] = intval( $thread ) == App::User()->id ? true :false;
+				$params['isProjOwner'] = $model->isProjectOwner($proj_id);
+				$params['thread'] = $thread;
+				$params['comments'] = $model->getComments($thread_id,$proj_id);
+				$params['comment_count'] = $model->getCommentCount($thread_id);
+				$params['userRole'] = $userRole;
 			}
 			else {
 				$this->set404();
 			}
 			
 			$this->setPageTitle('Messages > ' . $thread['subject']);
-			$this->render('messages',$param);
+			$this->render('messages',$params);
 			
 		}
 		else {
 			$this->render('noauth',array('type'=>'Project'));
 		}
+	}
+	
+	public function activityAction($proj_id,$act_id)
+	{
+		$this->loginGuest();
+		
+		$params = [
+			'id' => $proj_id,
+			'error_message' => false,
+		];
+		$ActModel = $this->loadModel('ActivityModel');
+		$ProjModel = $this->loadModel();
+		$userRole = $ProjModel->getProjectMemberRole(App::User()->id,$proj_id);
+		
+		$params['projInfo'] = $ProjModel->getProjectInfo($proj_id);
+		
+		$params['activity'] = $ActModel->getActivity($act_id);
+		$params['userRole'] = $userRole;
+		$params['assignedUsers'] = $ActModel->getAssignedUsers($act_id);
+		$params['prereqActivities'] = $this->loadModel('ActivityModel')->getPrerequisiteActivities($act_id);
+		
+		$this->render('activity',$params);
 	}
 	
 	public function accountSearchAction($keyword=null){
@@ -238,7 +261,7 @@ class ProjectController extends Controller
 	{
 		$this->layout = "login";
 
-		$param = [
+		$params = [
 			'error' => false,
 		];
 		$model = $this->loadModel();
@@ -250,22 +273,22 @@ class ProjectController extends Controller
 			$result = $model->verify( $hash, $response,$proj_id );
 
 			if( $result['status'] ) {
-				$param['error_type'] = 1;
+				$params['error_type'] = 1;
 			}
 			else {
-				$param['error_type'] = 0;
+				$params['error_type'] = 0;
 			}
-			$param['error_message'] = $result['message'];
+			$params['error_message'] = $result['message'];
 			$this->setPageTitle( 'Project Membership Verification');
 
 		}
 		else {
-			$param['error_type'] = 0;
-			$param['error_message'] = 'Invalid Verification';
+			$params['error_type'] = 0;
+			$params['error_message'] = 'Invalid Verification';
 			$this->setPageTitle( 'Project Membership Verification');
 		}
 
-		$this->render('verify',$param);
+		$this->render('verify',$params);
 	}
 	
 	public function verifynewAction( $hash )
@@ -274,7 +297,7 @@ class ProjectController extends Controller
 		
 		AccountModel::destroy();
 		
-		$param = [
+		$params = [
 			'error' => false,
 		];
 		$model = $this->loadModel();
@@ -288,15 +311,15 @@ class ProjectController extends Controller
 				$result = $model->verifynew( $hash, $response,$proj_id, null );
 
 				if( $result['status'] ) {
-					$param['error_type'] = 1;
+					$params['error_type'] = 1;
 				}
 				else {
-					$param['error_type'] = 0;
+					$params['error_type'] = 0;
 				}
-				$param['error_message'] = $result['message'];
+				$params['error_message'] = $result['message'];
 				$this->setPageTitle( 'Project Membership Verification');
 				
-				$this->render('verify',$param);exit;
+				$this->render('verify',$params);exit;
 			}
 			else {
 				if( isset( $_POST['action_post'] ) && $_POST['action_post'] == "do_project_invitenew_user") {
@@ -314,20 +337,20 @@ class ProjectController extends Controller
 								$userData = $this->loadModel('AccountModel')->getUserData($result['user_id']);
 								App::setSession('login_email',$userData['email']);
 							}
-							$param['error_type'] = 1;
+							$params['error_type'] = 1;
 						}
 						else {
-							$param['error_type'] = 0;
+							$params['error_type'] = 0;
 						}
 						
-						$param['error_message'] = $result['message'];
+						$params['error_message'] = $result['message'];
 						$this->setPageTitle( 'Project Membership Verification');
 						
-						$this->render('verify',$param);exit;
+						$this->render('verify',$params);exit;
 					}
 					else {
-						$param['error'] = true;
-						$param['error_message'] = 'All fields are required.';
+						$params['error'] = true;
+						$params['error_message'] = 'All fields are required.';
 					}
 				}
 			}
@@ -335,13 +358,13 @@ class ProjectController extends Controller
 		}
 		else {
 
-			$param['error_type'] = 0;
-			$param['error_message'] = 'Invalid Verification';
+			$params['error_type'] = 0;
+			$params['error_message'] = 'Invalid Verification';
 			$this->setPageTitle( 'Project Membership Verification');
-			$this->render('verify',$param);exit;
+			$this->render('verify',$params);exit;
 			
 		}
 
-		$this->render('verifynew',$param);
+		$this->render('verifynew',$params);
 	}
 }

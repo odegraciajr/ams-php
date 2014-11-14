@@ -9,26 +9,22 @@ class ActivityModel extends Model
 
 	public function addActivity($project_id)
 	{
-		$data = array_map('trim', $_POST);
+		$func_trim_string = function($value) {
+			if( !is_array($value) )
+				return trim($value);
+		};
+		
+		$assigned_users = null;
+		$activity_predecessor = null;
+		
+		if( isset( $_POST['assigned_user'] ) && is_array($_POST['assigned_user']) && count($_POST['assigned_user'])> 0)
+			$assigned_users = $_POST['assigned_user'];
+		if( isset( $_POST['prereq_act'] ) && is_array($_POST['prereq_act']) && count($_POST['prereq_act'])> 0)
+			$activity_predecessor = $_POST['prereq_act'];
+			
+		$data = array_map($func_trim_string, $_POST);
 
 		if( is_array( $data ) && count( $data ) > 0 ){
-
-
-			/*
-				action_post	do_newactivity
-				comment	Additional Comment
-				description	Description
-				due_date	1415752565502
-				due_time	1415752574089
-				estimate_duration	1415752582101
-				name	Name
-				parent_activity	1
-				priority	1
-				request_date	1415752558336
-				requestor	2
-				status	1
-				type_id	1
-			*/
 
 			$owner_id = App::User()->id;
 			$name = $data['name'];
@@ -39,7 +35,7 @@ class ActivityModel extends Model
 			$due_date = date("Y-m-d H:i:s", strtotime($data['due_date']));
 			$due_time = date("Y-m-d H:i:s", strtotime($data['due_time']));
 			$estimate_duration = date("Y-m-d H:i:s", strtotime($data['estimate_duration']));
-			$parent_activity = 0;//$data['parent_activity'];
+			$parent_activity = $data['parent_activity'];
 			$priority = $data['priority'];
 			$requestor = $data['requestor'];
 			$status = $data['status'];
@@ -66,7 +62,16 @@ class ActivityModel extends Model
 			$newActivity->bindValue(14, $status, PDO::PARAM_INT);
 			$newActivity->execute();
 
-			return $this->_db->lastInsertId();
+			$activity_id = $this->_db->lastInsertId();
+			
+			if( $activity_id ){
+				if( $assigned_users )
+					$this->assignUsersToActivity($activity_id,$assigned_users);
+				if( $activity_predecessor )
+					$this->assignActivityPrerequisite($activity_id,$activity_predecessor);
+			}
+			
+			return $activity_id;
 		}
 	}
 
@@ -95,6 +100,90 @@ class ActivityModel extends Model
 		return $sth->fetchAll();
 
 	}
+	
+	public function getActivity($id)
+	{
+		$sql = "SELECT a.id,a.description,a.estimate_duration,a.name,at.name AS type_name, CONCAT(u.first_name,' ',u.last_name) AS owner_name, ";
+		$sql .= "CONCAT(u2.first_name,' ',u2.last_name) AS requestor_name, ";
+		$sql .= "a.parent_activity, ";
+		$sql .= "a.due_date, a.due_time, a.request_date , a.status, a.requestor,a.owner_id ";
+		$sql .= "FROM activity AS a ";
+		$sql .= "LEFT JOIN activity_type AS at ON a.type_id=at.id ";
+		$sql .= "LEFT JOIN users AS u ON a.owner_id=u.id ";
+		$sql .= "LEFT JOIN users AS u2 ON a.requestor=u2.id ";
+		$sql .= "WHERE a.id = ?";
 
+		$sth = $this->_db->prepare($sql);
+		$sth->bindValue(1, $id, PDO::PARAM_INT);
+		$sth->execute();
+		return $sth->fetch();
+	}
+	
+	public function getPrerequisiteActivities($act_id)
+	{
+		$sql = "SELECT a.id,a.description,a.estimate_duration,a.name,at.name AS type_name, CONCAT(u.first_name,' ',u.last_name) AS owner_name, ";
+		$sql .= "CONCAT(u2.first_name,' ',u2.last_name) AS requestor_name, ";
+		$sql .= "a.parent_activity, ";
+		$sql .= "a.due_date, a.due_time, a.request_date , a.status, a.requestor,a.owner_id ";
+		$sql .= "FROM activity_predecessor AS ap ";
+		$sql .= "LEFT JOIN activity AS a ON a.id=ap.predecessor_id ";
+		$sql .= "LEFT JOIN activity_type AS at ON a.type_id=at.id ";
+		$sql .= "LEFT JOIN users AS u ON a.owner_id=u.id ";
+		$sql .= "LEFT JOIN users AS u2 ON a.requestor=u2.id ";
+		$sql .= "WHERE ap.main_activity = ?";
+
+		$sth = $this->_db->prepare($sql);
+		$sth->bindValue(1, $act_id, PDO::PARAM_INT);
+		$sth->execute();
+		return $sth->fetchAll();
+	}
+	
+	public function assignUsersToActivity($act_id,$users=array())
+	{
+		foreach($users as $id){
+			$sql = "INSERT INTO activity_assignment(user_id, activity_id) VALUES(?,?)";
+			$sth = $this->_db->prepare($sql);
+			$sth->bindValue(1, $id, PDO::PARAM_INT);
+			$sth->bindValue(2, $act_id, PDO::PARAM_INT);
+			$sth->execute();
+		}
+	}
+	
+	public function assignActivityPrerequisite($act_id,$acts=array())
+	{
+		foreach($acts as $id){
+			$sql = "INSERT INTO activity_predecessor(predecessor_id, main_activity) VALUES(?,?)";
+			$sth = $this->_db->prepare($sql);
+			$sth->bindValue(1, $id, PDO::PARAM_INT);
+			$sth->bindValue(2, $act_id, PDO::PARAM_INT);
+			$sth->execute();
+		}
+	}
+	
+	public function getAssignedUsers($act_id,$html=true)
+	{
+		$sql = "SELECT aa.*,CONCAT(u.first_name,' ',u.last_name) AS full_name FROM activity_assignment AS aa LEFT JOIN users AS u ON aa.user_id=u.id WHERE aa.activity_id=?";
+		$sth = $this->_db->prepare($sql);
+		$sth->bindValue(1, $act_id, PDO::PARAM_INT);
+		$sth->execute();
+		
+		if ($sth->rowCount() > 0) {
+			$users = $sth->fetchAll();
+			
+			if($html){
+				$list = "<ul>";
+				foreach($users as $user){
+					$url = RouteManager::createUrl('/account/userprofile/'.$user['user_id']);
+					$list .= '<li><a href="'.$url.'"><span class="item">'.$user['full_name'].'</a><span class="sep">,</span></li>';
+				}
+				$list .= "</ul>";
+				
+				return $list;
+			}
+			else{
+				return $users;
+			}
+		}
+	}
 
 }

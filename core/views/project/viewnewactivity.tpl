@@ -1,11 +1,10 @@
 <div class="content-main">
-	<h1>Messages</h1>
+	<h1>Activity</h1>
 	<div class="breadcrumb-wrap">
 		<ol class="breadcrumb">
 			<li><a href="<?php echo $this->createUrl('/project');?>">My Project</a></li>
 			<li><a href="<?php echo $this->createUrl('/project/view/'.$id);?>"><?php echo App::Tools()->sanitize_text($projInfo['name']);?></a></li>
-			<li><a href="<?php echo $this->createUrl('/project/view/'.$id.'/messages')?>">Messages</a></li>
-			<li class="active">New Thread</li>
+			<li class="active">New Activity</li>
 		</ol>
 	</div>
 	<div class="item-menu">
@@ -72,16 +71,19 @@
 					</select>
 				</div>
 			  </div>
-			  <!--<div class="form-group">
+			  <div class="form-group">
 				<label for="parent_activity" class="col-sm-2 control-label">Parent Activity</label>
 				<div class="col-sm-10">
 					<select class="form-control" name="parent_activity" id="parent_activity">
-						<option value="1">Project 1</option>
-						<option value="2">Project 2</option>
-						<option value="3">project 3</option>
+						<option value="0">None</option>
+						<?php if(is_array($activities) && count($activities)> 0):?>
+							<?php foreach( $activities as $act ):?>
+								<option value="<?php echo $act['id'];?>"><?php echo $act['name'];?></option>
+							<?php endforeach;?>
+						<?php endif;?>
 					</select>
 				</div>
-			  </div>-->
+			  </div>
 			  <div class="form-group">
 				<label for="due_date_dummy" class="col-sm-2 control-label">Due date</label>
 				<div class="col-sm-10">
@@ -116,6 +118,46 @@
 				</div>
 			  </div>
 			  <div class="form-group">
+				<label for="assign_user" class="col-sm-2 control-label">Assign User</label>
+					<div class="col-sm-10">
+						<div class="input-group">
+							<select class="form-control" id="assign_user_list">
+								<?php if(is_array($projMembers) && count($projMembers)> 0):?>
+									<?php foreach( $projMembers as $proj ):?>
+										<option value="<?php echo $proj['user_id'];?>"><?php echo $proj['full_name'];?></option>
+									<?php endforeach;?>
+								<?php endif;?>
+							</select>
+							<div class="input-group-btn">
+							<button tabindex="-1" class="btn btn-primary" id="add_to_assign_user" type="button">Assign</button>
+							</div>
+						</div>
+						<div id="assigned_users">
+							<ul></ul>	
+						</div>
+					</div>
+			  </div>
+			  <div class="form-group">
+				<label for="assign_user" class="col-sm-2 control-label">Prerequisites</label>
+					<div class="col-sm-10">
+						<div class="input-group">
+							<select class="form-control" id="prerequisites_list">
+								<?php if(is_array($activities) && count($activities)> 0):?>
+									<?php foreach( $activities as $act ):?>
+										<option value="<?php echo $act['id'];?>"><?php echo $act['name'];?></option>
+									<?php endforeach;?>
+								<?php endif;?>
+							</select>
+							<div class="input-group-btn">
+							<button tabindex="-1" class="btn btn-primary" id="add_prerequisites_activity" type="button">Add</button>
+							</div>
+						</div>
+						<div id="prerequisites_activity">
+							<ul></ul>	
+						</div>
+					</div>
+			  </div>
+			  <div class="form-group">
 				<label for="comment" class="col-sm-2 control-label">Additional Comment</label>
 				<div class="col-sm-10">
 				  <textarea id="comment" name="comment" class="form-control" rows="3"></textarea>
@@ -138,6 +180,7 @@
 				<div class="col-sm-10">
 					<select class="form-control" name="status" id="status">
 						<option value="1">Active</option>
+						<option value="2">Completed</option>
 						<option value="0">Pending</option>
 						<option value="-1">Disabled</option>
 					</select>
@@ -152,7 +195,6 @@
 				</div>
 			  </div>
 			</form>
-			<?php// echo date("F j, Y, g:i a",strtotime("2014-11-12 09:20:00"));?>
 		</div>
 	</div>
 </div>
