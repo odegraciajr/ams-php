@@ -45,12 +45,12 @@ jQuery(document).ready(function($){
 			pickSeconds: false,
 			pick12HourFormat: false
 		});
-		$('#due_date_dummy,#request_date_dummy').datetimepicker({
+		$('#due_date_dummy,#start_date_dummy,#request_date_dummy').datetimepicker({
 			pickTime:false,
 			useCurrent: true
 		});
 
-		$('#due_time_dummy').datetimepicker({
+		$('#due_time_dummy,#start_time_dummy').datetimepicker({
 			pickDate: false
 		});
 
@@ -68,6 +68,16 @@ jQuery(document).ready(function($){
 		   var ndate = e.date;
 		   $("#due_time").val(ndate.format("YYYY-MM-DD HH:mm:ss"));
 		});
+		
+		$("#start_date_dummy").on("dp.change",function (e) {
+		   var ndate = e.date;
+		   $("#start_date").val(ndate.format("YYYY-MM-DD HH:mm:ss"));
+		});
+
+		$("#start_time_dummy").on("dp.change",function (e) {
+		   var ndate = e.date;
+		   $("#start_time").val(ndate.format("YYYY-MM-DD HH:mm:ss"));
+		});
 
 		$("#request_date_dummy").on("dp.change",function (e) {
 		   var ndate = e.date;
@@ -76,12 +86,14 @@ jQuery(document).ready(function($){
 	}
 	
 	$("#add_to_assign_user").click(function(){
-		var user_id = $("#assign_user_list").val();
+		var user_id = parseInt( $("#assign_user_list").val() );
 		var name = $("#assign_user_list option:selected").text();
 		var list = $("#assigned_users ul");
 		
-		var elem = '<li><span class="name">'+name+'</span><button type="button" class="btn btn-danger btn-xs remove_assigned_user">&times;</button><input name="assigned_user[]" value="'+user_id+'" type="hidden"/></li>';
-		list.append(elem);
+		if( user_id ){
+			var elem = '<li><span class="name">'+name+'</span><button type="button" class="btn btn-danger btn-xs remove_assigned_user">&times;</button><input name="assigned_user[]" value="'+user_id+'" type="hidden"/></li>';
+			list.append(elem);
+		}
 	});
 	
 	$(document).on("click",".remove_assigned_user",function(){
@@ -91,12 +103,14 @@ jQuery(document).ready(function($){
 	});
 	
 	$("#add_prerequisites_activity").click(function(){
-		var act_id = $("#prerequisites_list").val();
+		var act_id = parseInt( $("#prerequisites_list").val() );
 		var name = $("#prerequisites_list option:selected").text();
 		var list = $("#prerequisites_activity ul");
 		
-		var elem = '<li><span class="name">'+name+'</span><button type="button" class="btn btn-danger btn-xs remove_prereq_act">&times;</button><input name="prereq_act[]" value="'+act_id+'" type="hidden"/></li>';
-		list.append(elem);
+		if( act_id ){
+			var elem = '<li><span class="name">'+name+'</span><button type="button" class="btn btn-danger btn-xs remove_prereq_act">&times;</button><input name="prereq_act[]" value="'+act_id+'" type="hidden"/></li>';
+			list.append(elem);
+		}
 	});
 	
 	$(document).on("click",".remove_prereq_act",function(){

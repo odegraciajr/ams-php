@@ -85,6 +85,34 @@
 				</div>
 			  </div>
 			  <div class="form-group">
+				<label for="wbs" class="col-sm-2 control-label">WBS Code</label>
+				<div class="col-sm-10">
+				  <input type="text" class="form-control" id="wbs" name="wbs">
+				</div>
+			  </div>
+			  <div class="form-group">
+				<label for="start_date_dummy" class="col-sm-2 control-label">Start date</label>
+				<div class="col-sm-10">
+					<div class='input-group date'>
+						<input id="start_date_dummy" type='text' class="form-control" data-date-format="MM/DD/YYYY"/>
+						<input name="start_date" id="start_date" type='hidden'/>
+						<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+						</span>
+					</div>
+				</div>
+			  </div>
+			  <div class="form-group">
+				<label for="start_time_dummy" class="col-sm-2 control-label">Start time</label>
+				<div class="col-sm-10">
+					<div class='input-group date'>
+						<input id="start_time_dummy" type='text' class="form-control" />
+						<input name="start_time" id="start_time" type='hidden'/>
+						<span id="get_start_time" class="input-group-addon"><span class="glyphicon glyphicon-time"></span>
+						</span>
+					</div>
+				</div>
+			  </div>
+			  <div class="form-group">
 				<label for="due_date_dummy" class="col-sm-2 control-label">Due date</label>
 				<div class="col-sm-10">
 					<div class='input-group date'>
@@ -122,6 +150,7 @@
 					<div class="col-sm-10">
 						<div class="input-group">
 							<select class="form-control" id="assign_user_list">
+								<option value="0">None</option>
 								<?php if(is_array($projMembers) && count($projMembers)> 0):?>
 									<?php foreach( $projMembers as $proj ):?>
 										<option value="<?php echo $proj['user_id'];?>"><?php echo $proj['full_name'];?></option>
@@ -142,6 +171,7 @@
 					<div class="col-sm-10">
 						<div class="input-group">
 							<select class="form-control" id="prerequisites_list">
+							<option value="0">None</option>
 								<?php if(is_array($activities) && count($activities)> 0):?>
 									<?php foreach( $activities as $act ):?>
 										<option value="<?php echo $act['id'];?>"><?php echo $act['name'];?></option>

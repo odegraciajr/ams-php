@@ -1,5 +1,5 @@
 <div id="messages" class="content-main">
-	<h1>Messages</h1>
+	<h1>Activity</h1>
 	<div class="breadcrumb-wrap">
 		<ol class="breadcrumb">
 			<li><a href="<?php echo $this->createUrl('/project');?>">My Project</a></li>
@@ -23,6 +23,7 @@
 		<div class="panel-body">
 			<p class="text-right">
 				<a href="<?php echo $this->createUrl('/project/view/'.$id.'/activity')?>" class="btn btn-primary btn-lg">Activity List</a>
+				<a href="<?php echo $this->createUrl('/project/editactivity/'.$id.'/'.$activity['id'])?>" class="btn btn-success btn-lg">Edit Activity</a>
 			</p>
 			<div class="main-activty">
 				<form role="form" class="form-horizontal">
@@ -42,6 +43,12 @@
 						<label class="col-sm-4 control-label text-left">Type</label>
 						<div class="col-sm-8">
 							<p class="form-control-static"><?php echo App::Tools()->sanitize_text($activity['type_name']);?></p>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-4 control-label text-left">WBS Code</label>
+						<div class="col-sm-8">
+							<p class="form-control-static"><?php echo App::Tools()->sanitize_text($activity['wbs']);?></p>
 						</div>
 					</div>
 					<div class="form-group">
@@ -71,6 +78,18 @@
 						</div>
 					</div>
 					<div class="form-group">
+						<label class="col-sm-4 control-label text-left">Start date</label>
+						<div class="col-sm-8">
+							<p class="form-control-static"><?php echo App::Tools()->sanitize_text(date("F j, Y",strtotime($activity['start_date'])));?></p>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-4 control-label text-left">Start time</label>
+						<div class="col-sm-8">
+							<p class="form-control-static"><?php echo App::Tools()->sanitize_text(date("g:i A",strtotime($activity['start_time'])));?></p>
+						</div>
+					</div>
+					<div class="form-group">
 						<label class="col-sm-4 control-label text-left">Due date</label>
 						<div class="col-sm-8">
 							<p class="form-control-static"><?php echo App::Tools()->sanitize_text(date("F j, Y",strtotime($activity['due_date'])));?></p>
@@ -92,7 +111,17 @@
 						<label class="col-sm-4 control-label text-left">Parent activity</label>
 						<div class="col-sm-8">
 							<p class="form-control-static">
-								<?php echo App::Tools()->sanitize_text($activity['parent_activity']);?>
+								<?php
+									$p_name = !empty( $activity['parent_name'] ) ? $activity['parent_name'] : "None";
+								echo App::Tools()->sanitize_text($p_name);?>
+							</p>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-4 control-label text-left">Priority</label>
+						<div class="col-sm-8">
+							<p class="form-control-static">
+								<?php echo $this->loadModel('ActivityModel')->getActivityPriority($activity['priority']);?>
 							</p>
 						</div>
 					</div>
@@ -101,6 +130,14 @@
 						<div class="col-sm-8">
 							<div class="form-control-static assigned_users_list">
 								<?php echo $assignedUsers;?>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-4 control-label text-left">Status</label>
+						<div class="col-sm-8">
+							<div class="form-control-static assigned_users_list">
+								<?php echo $this->loadModel('ActivityModel')->getActivityStatus($activity['status']);?>
 							</div>
 						</div>
 					</div>

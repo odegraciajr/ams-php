@@ -99,6 +99,9 @@ CREATE TABLE IF NOT EXISTS `activity` (
   `requestor` BIGINT(20) UNSIGNED NULL,
   `request_date` DATETIME NULL,
   `estimate_duration` DATETIME NULL,
+  `wbs` VARCHAR(25) NOT NULL,
+  `start_date` DATETIME NULL,
+  `start_time` DATETIME NULL,
   `due_date` DATETIME NULL,
   `due_time` DATETIME NULL,
   `comment` TINYTEXT NULL,
@@ -108,11 +111,17 @@ CREATE TABLE IF NOT EXISTS `activity` (
   INDEX (`project_id` ASC),
   INDEX (`owner_id` ASC),
   INDEX (`type_id` ASC)
-  )ENGINE = InnoDB
+  )ENGINE = InnoDB;
+  
+  /*
+	ALTER TABLE activity ADD `wbs` VARCHAR(25) NOT NULL AFTER `estimate_duration`;
+	ALTER TABLE activity ADD `start_date` DATETIME NULL AFTER `wbs`;
+	ALTER TABLE activity ADD `start_time` DATETIME NULL AFTER `start_date`;
+  */
 
   CREATE TABLE IF NOT EXISTS `activity_assignment` (
   `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `users_id` BIGINT(20) NOT NULL,
+  `user_id` BIGINT(20) NOT NULL,
   `activity_id` INT(10) UNSIGNED NOT NULL,
   `status` TINYINT(2) NULL DEFAULT 1,
   PRIMARY KEY (`id`),

@@ -235,7 +235,7 @@ class ProjectController extends Controller
 		$ActModel = $this->loadModel('ActivityModel');
 		$ProjModel = $this->loadModel();
 		$userRole = $ProjModel->getProjectMemberRole(App::User()->id,$proj_id);
-		
+			
 		$params['projInfo'] = $ProjModel->getProjectInfo($proj_id);
 		
 		$params['activity'] = $ActModel->getActivity($act_id);
@@ -244,6 +244,53 @@ class ProjectController extends Controller
 		$params['prereqActivities'] = $this->loadModel('ActivityModel')->getPrerequisiteActivities($act_id);
 		
 		$this->render('activity',$params);
+	}
+	
+	public function editActivityAction($proj_id,$act_id)
+	{
+		$this->loginGuest();
+		
+		$params = [
+			'id' => $proj_id,
+			'act_id' => $act_id,
+			'error_message' => false,
+		];
+		$this->add_style('/assets/css/bootstrap-datetimepicker.min.css');
+		$this->add_script('/assets/js/moment.js',true);
+		$this->add_script('/assets/js/bootstrap-datetimepicker.min.js',true);
+			
+		$ActModel = $this->loadModel('ActivityModel');
+		$ProjModel = $this->loadModel();
+		$userRole = $ProjModel->getProjectMemberRole(App::User()->id,$proj_id);
+		
+		
+		if( isset( $_POST['action_post'] ) && $_POST['action_post'] == "do_updateactivity") {
+			if( $_POST['name'] && $_POST['type_id'] ) {
+				$activity_id = $this->loadModel('ActivityModel')->updateActivity($act_id);
+				if($activity_id)
+					$params['error_message'] = 'Activity updated. <a href="'.$this->createUrl('/project/activity/'.$proj_id.'/'.$act_id).'">Click here to view.</a>';
+			}
+			else {
+				$params['error_message'] = 'All fields are required.';
+			}
+		}
+		
+		$params['projInfo'] = $ProjModel->getProjectInfo($proj_id);
+		
+		$params['activity'] = $ActModel->getActivity($act_id);
+		$params['userRole'] = $userRole;
+		$params['assignedUsers'] = $ActModel->getAssignedUsers($act_id);
+		$params['prereqActivities'] = $ActModel->getPrerequisiteActivities($act_id);
+		$params['activities'] = $ActModel->getProjectActivity($proj_id);
+		$params['projMembers'] = $ProjModel->getProjectMembers($proj_id);
+		$params['activity_types'] = $ActModel->getActivityTypes();
+		$params['activityStatus'] = $ActModel->getActivityStatus();
+		$params['activityPriority'] = $ActModel->getActivityPriority();
+		
+		$params['activityAssignment'] = $ActModel->getActivityAssignment($act_id);
+		$params['activityPredecessor'] = $ActModel->getActivityPredecessor($act_id);
+				
+		$this->render('editactivity',$params);
 	}
 	
 	public function accountSearchAction($keyword=null){
