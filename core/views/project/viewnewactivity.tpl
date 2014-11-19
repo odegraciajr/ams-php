@@ -134,7 +134,7 @@
 					</div>
 				</div>
 			  </div>
-			  <div class="form-group">
+			  <!--<div class="form-group">
 				<label for="estimate_duration_dummy" class="col-sm-2 control-label">Estimated duration</label>
 				<div class="col-sm-10">
 					<div class='input-group date'>
@@ -142,6 +142,27 @@
 						<input name="estimate_duration" id="estimate_duration" type='hidden'/>
 						<span class="input-group-addon"><span class="glyphicon glyphicon-time"></span>
 						</span>
+					</div>
+				</div>
+			  </div>-->
+			  <div class="form-group">
+				<label for="estimate_duration_dummy" class="col-sm-2 control-label">Estimated duration</label>
+				<div class="col-sm-2">
+					<div class='input-group'>
+						<input maxlength="2" min="0" max="99" name="estimate_duration[days]" placeholder="0" type="number" class="form-control" />
+						<span class="input-group-addon">Days</span>
+					</div>
+				</div>
+				<div class="col-sm-2">
+					<div class='input-group'>
+						<input maxlength="2" min="0" max="23" name="estimate_duration[hours]" placeholder="0" type="number" class="form-control" />
+						<span class="input-group-addon">Hours</span>
+					</div>
+				</div>
+				<div class="col-sm-2">
+					<div class='input-group'>
+						<input maxlength="2" min="0" max="59" name="estimate_duration[minutes]" placeholder="0" type="number" class="form-control" />
+						<span class="input-group-addon">Mins</span>
 					</div>
 				</div>
 			  </div>
@@ -197,11 +218,11 @@
 				<label for="Priority" class="col-sm-2 control-label">Priority</label>
 				<div class="col-sm-10">
 					<select class="form-control" name="priority" id="priority">
-						<option value="1">Level 1</option>
-						<option value="2">Level 2</option>
-						<option value="3">Level 3</option>
-						<option value="4">Level 4</option>
-						<option value="5">Level 5</option>
+						<?php if(is_array($activityPriority) && count($activityPriority)> 0):?>
+								<?php foreach( $activityPriority as $key=>$value ):?>
+									<option value="<?php echo $key;?>"><?php echo $value;?></option>
+								<?php endforeach;?>
+							<?php endif;?>
 					</select>
 				</div>
 			  </div>
@@ -209,10 +230,11 @@
 				<label for="status" class="col-sm-2 control-label">Status</label>
 				<div class="col-sm-10">
 					<select class="form-control" name="status" id="status">
-						<option value="1">Active</option>
-						<option value="2">Completed</option>
-						<option value="0">Pending</option>
-						<option value="-1">Disabled</option>
+						<?php if(is_array($activityStatus) && count($activityStatus)> 0):?>
+								<?php foreach( $activityStatus as $key=>$value ):?>
+									<option value="<?php echo $key;?>"><?php echo $value;?></option>
+								<?php endforeach;?>
+							<?php endif;?>
 					</select>
 				</div>
 			  </div>

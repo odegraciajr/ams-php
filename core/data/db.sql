@@ -98,7 +98,7 @@ CREATE TABLE IF NOT EXISTS `activity` (
   `parent_activity` INT(10) UNSIGNED NULL,
   `requestor` BIGINT(20) UNSIGNED NULL,
   `request_date` DATETIME NULL,
-  `estimate_duration` DATETIME NULL,
+  `estimate_duration` VARCHAR(10) NULL,
   `wbs` VARCHAR(25) NOT NULL,
   `start_date` DATETIME NULL,
   `start_time` DATETIME NULL,
@@ -117,6 +117,8 @@ CREATE TABLE IF NOT EXISTS `activity` (
 	ALTER TABLE activity ADD `wbs` VARCHAR(25) NOT NULL AFTER `estimate_duration`;
 	ALTER TABLE activity ADD `start_date` DATETIME NULL AFTER `wbs`;
 	ALTER TABLE activity ADD `start_time` DATETIME NULL AFTER `start_date`;
+	
+	ALTER TABLE activity CHANGE `estimate_duration` `estimate_duration` VARCHAR(10) NULL
   */
 
   CREATE TABLE IF NOT EXISTS `activity_assignment` (

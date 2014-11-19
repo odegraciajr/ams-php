@@ -40,6 +40,48 @@ class ProjectController extends Controller
 		$this->render('create',$params);
 	}
 	
+	public function editAction($id)
+	{
+		$this->loginGuest();
+		
+		$params = [
+			'id' => $id,
+			'error_message' => false
+		];
+
+		$model = $this->loadModel('ProjectModel');
+		$projInfo = $model->getProjectInfo($id);
+		$isProjOwner = $model->isProjectOwner($id);
+		$params['myOrg'] = $this->loadModel('OrganizationModel')->getOwnedOrganizations();
+		
+		if( $projInfo ) {
+		
+			if($isProjOwner){
+			
+				if( isset( $_POST['action_post'] ) && $_POST['action_post'] == "do_update_project" ) {
+					if( isset( $_POST['name'] ) && trim( $_POST['name'] ) ) {
+						$newProj = $this->loadModel('ProjectModel')->updateProject($id);
+						if($newProj){
+							$params['error_message']='Project Updated. <a href="'.$this->createUrl('/project/view/'.$newProj).'">Click here to view.</a>';
+							$projInfo = $model->getProjectInfo($id);
+						}
+					}
+				}
+			
+				$params['projInfo'] = $projInfo;
+			}
+			else{
+				$this->renderEnd('noauth',array('type'=>'Project.'));
+			}
+			
+		}
+		else {
+			$this->set404();
+		}
+		$this->setPageTitle('Project > Edit');
+		
+		$this->render('edit',$params);
+	}
 	
 	public function viewAction($id,$action='main')
 	{
@@ -163,6 +205,8 @@ class ProjectController extends Controller
 			$params['activities'] = $this->loadModel('ActivityModel')->getProjectActivity($id);
 			$params['projMembers'] = $model->getProjectMembers($id);
 			$params['activity_types'] = $this->loadModel('ActivityModel')->getActivityTypes();
+			$params['activityStatus'] = $this->loadModel('ActivityModel')->getActivityStatus();
+			$params['activityPriority'] = $this->loadModel('ActivityModel')->getActivityPriority();
 
 			$this->setPageTitle('My Project > ' . $projInfo['name'] . ' > ' . 'New Activity');
 		}

@@ -4,8 +4,9 @@
 		<ol class="breadcrumb">
 			<li><a href="<?php echo $this->createUrl('/project');?>">My Project</a></li>
 			<li><a href="<?php echo $this->createUrl('/project/view/'.$id);?>"><?php echo App::Tools()->sanitize_text($projInfo['name']);?></a></li>
-			<li><a href="<?php echo $this->createUrl('/project/view/'.$id.'/messages')?>">Messages</a></li>
-			<li class="active"></li>
+			<li><a href="<?php echo $this->createUrl('/project/view/'.$id.'/activity');?>">Activity</a></li>
+			<li><a href="<?php echo $this->createUrl('/project/activity/'.$id.'/'.$activity['id']);?>"><?php echo App::Tools()->sanitize_text($activity['name']);?></a></li>
+			<li>Edit Activity</li>
 		</ol>
 	</div>
 	<div class="item-menu">
@@ -141,17 +142,30 @@
 						</div>
 					</div>
 				  </div>
-				  <div class="form-group">
+				<div class="form-group">
+					<?php
+						$e_duration = $this->loadModel('ActivityModel')->estimateDurationToArr($activity['estimate_duration']);
+					?>
 					<label for="estimate_duration_dummy" class="col-sm-2 control-label">Estimated duration</label>
-					<div class="col-sm-10">
-						<div class='input-group date'>
-							<input value="<?php echo App::Tools()->sanitize_text(date("H:m",strtotime($activity['estimate_duration'])));?>" id="estimate_duration_dummy" type='text' class="form-control" />
-							<input value="<?php echo App::Tools()->sanitize_text(date("Y-m-d H:m:s",strtotime($activity['estimate_duration'])));?>" name="estimate_duration" id="estimate_duration" type='hidden'/>
-							<span class="input-group-addon"><span class="glyphicon glyphicon-time"></span>
-							</span>
+					<div class="col-sm-2">
+						<div class='input-group'>
+							<input value="<?php echo $e_duration['days'];?>" maxlength="2" min="0" max="99" name="estimate_duration[days]" placeholder="0" type="number" class="form-control" />
+							<span class="input-group-addon">Days</span>
 						</div>
 					</div>
-				  </div>
+					<div class="col-sm-2">
+						<div class='input-group'>
+							<input value="<?php echo $e_duration['hours'];?>" maxlength="2" min="0" max="23" name="estimate_duration[hours]" placeholder="0" type="number" class="form-control" />
+							<span class="input-group-addon">Hours</span>
+						</div>
+					</div>
+					<div class="col-sm-2">
+						<div class='input-group'>
+							<input value="<?php echo $e_duration['mins'];?>" maxlength="2" min="0" max="59" name="estimate_duration[minutes]" placeholder="0" type="number" class="form-control" />
+							<span class="input-group-addon">Mins</span>
+						</div>
+					</div>
+				</div>
 				  <div class="form-group">
 					<label for="assign_user" class="col-sm-2 control-label">Assign User</label>
 						<div class="col-sm-10">

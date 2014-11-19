@@ -16,11 +16,14 @@ class ActivityModel extends Model
 		
 		$assigned_users = null;
 		$activity_predecessor = null;
+		$estimate_duration = null;
 		
 		if( isset( $_POST['assigned_user'] ) && is_array($_POST['assigned_user']) && count($_POST['assigned_user'])> 0)
 			$assigned_users = $_POST['assigned_user'];
 		if( isset( $_POST['prereq_act'] ) && is_array($_POST['prereq_act']) && count($_POST['prereq_act'])> 0)
 			$activity_predecessor = $_POST['prereq_act'];
+		if( isset( $_POST['estimate_duration'] ) && is_array($_POST['estimate_duration']) && count($_POST['estimate_duration'])> 0)
+			$estimate_duration = $_POST['estimate_duration'];
 			
 		$data = array_map($func_trim_string, $_POST);
 
@@ -36,7 +39,8 @@ class ActivityModel extends Model
 			$due_time = date("Y-m-d H:i:s", strtotime($data['due_time']));
 			$start_date = date("Y-m-d H:i:s", strtotime($data['start_date']));
 			$start_time = date("Y-m-d H:i:s", strtotime($data['start_time']));
-			$estimate_duration = date("Y-m-d H:i:s", strtotime($data['estimate_duration']));
+			//$estimate_duration = date("Y-m-d H:i:s", strtotime($data['estimate_duration']));
+			$estimate_duration_formated = $this->parseEstimateDuration($estimate_duration);
 			$parent_activity = $data['parent_activity'];
 			$priority = $data['priority'];
 			$requestor = $data['requestor'];
@@ -57,7 +61,7 @@ class ActivityModel extends Model
 			$newActivity->bindValue(6, $parent_activity, PDO::PARAM_INT);
 			$newActivity->bindValue(7, $requestor, PDO::PARAM_INT);
 			$newActivity->bindValue(8, $request_date, PDO::PARAM_STR);
-			$newActivity->bindValue(9, $estimate_duration, PDO::PARAM_STR);
+			$newActivity->bindValue(9, $estimate_duration_formated, PDO::PARAM_STR);
 			$newActivity->bindValue(10, $due_date, PDO::PARAM_STR);
 			$newActivity->bindValue(11, $due_time, PDO::PARAM_STR);
 			$newActivity->bindValue(12, $comment, PDO::PARAM_STR);
@@ -91,11 +95,14 @@ class ActivityModel extends Model
 		
 		$assigned_users = null;
 		$activity_predecessor = null;
+		$estimate_duration = null;
 		
 		if( isset( $_POST['assigned_user'] ) && is_array($_POST['assigned_user']) && count($_POST['assigned_user'])> 0)
 			$assigned_users = $_POST['assigned_user'];
 		if( isset( $_POST['prereq_act'] ) && is_array($_POST['prereq_act']) && count($_POST['prereq_act'])> 0)
 			$activity_predecessor = $_POST['prereq_act'];
+		if( isset( $_POST['estimate_duration'] ) && is_array($_POST['estimate_duration']) && count($_POST['estimate_duration'])> 0)
+			$estimate_duration = $_POST['estimate_duration'];
 			
 		$data = array_map($func_trim_string, $_POST);
 
@@ -111,7 +118,8 @@ class ActivityModel extends Model
 			$due_time = date("Y-m-d H:i:s", strtotime($data['due_time']));
 			$start_date = date("Y-m-d H:i:s", strtotime($data['start_date']));
 			$start_time = date("Y-m-d H:i:s", strtotime($data['start_time']));
-			$estimate_duration = date("Y-m-d H:i:s", strtotime($data['estimate_duration']));
+			//$estimate_duration = date("Y-m-d H:i:s", strtotime($data['estimate_duration']));
+			$estimate_duration_formated = $this->parseEstimateDuration($estimate_duration);
 			$parent_activity = $data['parent_activity'];
 			$priority = $data['priority'];
 			$requestor = $data['requestor'];
@@ -135,7 +143,7 @@ class ActivityModel extends Model
 			$updatedActivity->bindValue(6, $parent_activity, PDO::PARAM_INT);
 			$updatedActivity->bindValue(7, $requestor, PDO::PARAM_INT);
 			$updatedActivity->bindValue(8, $request_date, PDO::PARAM_STR);
-			$updatedActivity->bindValue(9, $estimate_duration, PDO::PARAM_STR);
+			$updatedActivity->bindValue(9, $estimate_duration_formated, PDO::PARAM_STR);
 			$updatedActivity->bindValue(10, $due_date, PDO::PARAM_STR);
 			$updatedActivity->bindValue(11, $due_time, PDO::PARAM_STR);
 			$updatedActivity->bindValue(12, $comment, PDO::PARAM_STR);
@@ -365,5 +373,52 @@ class ActivityModel extends Model
 		else
 			return $priority;
 	}
-
+	
+	public function parseEstimateDuration($duration=array(),$delimiter=":")
+	{
+		$value="";
+		
+		if(is_array($duration) && count($duration)>0){
+			$value = implode($delimiter, $duration);
+		}
+		
+		return $value;
+	}
+	
+	public function estimateDurationToArr($duration=null,$delimiter=":")
+	{
+		$arr = array(
+			'days'=>0,
+			'hours'=>0,
+			'mins'=>0
+		);
+		if($duration!==null){
+			$durationArr = explode($delimiter, $duration);
+			
+			if( isset( $durationArr[0] ) && is_numeric( $durationArr[0] ) ){
+				$arr['days'] = sprintf("%02s", $durationArr[0]);
+			}
+			else{
+				$arr['days'] = 0;
+			}
+			
+			if( isset( $durationArr[1] ) && is_numeric( $durationArr[1] ) ){
+				$arr['hours'] = sprintf("%02s", $durationArr[1]);
+			}
+			else{
+				$arr['hours'] = 0;
+			}
+			
+			if( isset( $durationArr[2] ) && is_numeric( $durationArr[2] ) ){
+				$arr['mins'] = sprintf("%02s", $durationArr[2]);
+			}
+			else{
+				$arr['mins'] = 0;
+			}
+				
+			
+		}
+		
+		return $arr;
+	}
 }

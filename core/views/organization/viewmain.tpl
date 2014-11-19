@@ -63,6 +63,11 @@
 						</div>
 					</div>
 				</form>
+			<?php if($isOrgOwner):?>
+				<p class="text-right reset">
+					<a href="<?php echo RouteManager::createUrl('/organization/edit/'.$id);?>" class="btn btn-primary">Edit Organization</a>
+				</p>
+			<?php endif;?>
 		</div>
 	</div>
 </div>

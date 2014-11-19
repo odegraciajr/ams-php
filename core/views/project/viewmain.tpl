@@ -45,6 +45,11 @@
 					</div>
 				</div>
 			</form>
+			<?php if($isProjOwner):?>
+			<p class="text-right reset">
+				<a href="<?php echo RouteManager::createUrl('/project/edit/'.$projInfo['id']);?>" class="btn btn-primary">Edit Project</a>
+			</p>
+			<?php endif;?>
 		</div>
 	</div>
 </div>

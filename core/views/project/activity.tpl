@@ -4,8 +4,8 @@
 		<ol class="breadcrumb">
 			<li><a href="<?php echo $this->createUrl('/project');?>">My Project</a></li>
 			<li><a href="<?php echo $this->createUrl('/project/view/'.$id);?>"><?php echo App::Tools()->sanitize_text($projInfo['name']);?></a></li>
-			<li><a href="<?php echo $this->createUrl('/project/view/'.$id.'/messages')?>">Messages</a></li>
-			<li class="active"></li>
+			<li><a href="<?php echo $this->createUrl('/project/view/'.$id.'/activity');?>">Activity</a></li>
+			<li class="active"><?php echo App::Tools()->sanitize_text($activity['name']);?></li>
 		</ol>
 	</div>
 	<div class="item-menu">
@@ -102,9 +102,12 @@
 						</div>
 					</div>
 					<div class="form-group">
+						<?php
+						$e_duration = $this->loadModel('ActivityModel')->estimateDurationToArr($activity['estimate_duration']);
+						?>
 						<label class="col-sm-4 control-label text-left">Estimate duration</label>
 						<div class="col-sm-8">
-							<p class="form-control-static"><?php echo App::Tools()->sanitize_text(date("H:m",strtotime($activity['estimate_duration'])));?> Hours</p>
+							<p class="form-control-static"><?php echo $e_duration['days'];?> Days, <?php echo $e_duration['hours'];?> Hours, <?php echo $e_duration['mins'];?> Minutes</p>
 						</div>
 					</div>
 					<div class="form-group">

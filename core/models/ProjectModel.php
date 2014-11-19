@@ -82,6 +82,35 @@ class ProjectModel extends Model
 		return false;
 	}
 	
+	public function updateProject( $proj_id )
+	{
+		
+		$data = array_map('trim', $_POST);
+		
+		if( is_array( $data ) && count( $data ) > 0 ) {
+			
+			$owner_id = App::User()->id;
+			$name = $data['name'];
+			$description = $data['description'];
+			$organization = $data['organization'];
+			
+			$sql = "UPDATE project SET name=?,description=?,organization_id=? WHERE id=? AND user_id=?";
+			
+			$updateproj = $this->_db->prepare($sql);
+			$updateproj->bindValue(1, $name, PDO::PARAM_STR);
+			$updateproj->bindValue(2, $description, PDO::PARAM_STR);
+			$updateproj->bindValue(3, $organization, PDO::PARAM_INT);
+			$updateproj->bindValue(4, $proj_id, PDO::PARAM_INT);
+			$updateproj->bindValue(5, $owner_id, PDO::PARAM_INT);
+			$updateproj->execute();
+			
+			if($proj_id)
+				return $proj_id;
+			
+		}
+		return false;
+	}
+	
 	public function createProjectMember( $proj_id, $user_id, $role_id=1, $status=0 )
 	{
 		$sql = "INSERT INTO project_members(project_id,user_id,role_id,status,date_joined) ";

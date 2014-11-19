@@ -39,6 +39,49 @@ class OrganizationController extends Controller
 		$this->render('create',$param);
 	}
 	
+	public function editAction($id)
+	{
+		$this->loginGuest();
+		
+		$params = [
+			'id' => $id,
+			'error_message' => false
+		];
+
+		$model = $this->loadModel('OrganizationModel');
+		$orgInfo = $model->getOrgInfo($id);
+		$isOrgOwner = $model->isOrgOwner($id);
+		
+		if( $orgInfo ) {
+		
+			if($isOrgOwner){
+			
+				if( isset( $_POST['action_post'] ) && $_POST['action_post'] == "do_update_organization" ) {
+					if( isset( $_POST['name'] ) && trim( $_POST['name'] ) ) {
+						$updatedOrg = $model->updateOrganization($id);
+						if($updatedOrg){
+							$params['error_message']='Organization Updated. <a href="'.$this->createUrl('/organization/view/'.$updatedOrg).'">Click here to view.</a>';
+							$orgInfo = $model->getOrgInfo($id);
+						}
+					}
+				}
+			
+				$params['orgInfo'] = $orgInfo;
+			}
+			else{
+				$this->renderEnd('noauth',array('type'=>'Organization.'));
+			}
+			
+		}
+		else {
+			$this->set404();
+		}
+		$this->setPageTitle('Organization > Edit');
+		
+		$this->render('edit',$params);
+		
+	}
+	
 	public function viewAction($id,$action='main')
 	{
 		$this->loginGuest();

@@ -39,12 +39,12 @@ jQuery(document).ready(function($){
 		});
 	}
 	if(jQuery().datetimepicker) {
-		$('#estimate_duration_dummy').datetimepicker({
+		/*$('#estimate_duration_dummy').datetimepicker({
 			format: 'HH:mm',
 			pickDate: false,
 			pickSeconds: false,
 			pick12HourFormat: false
-		});
+		});*/
 		$('#due_date_dummy,#start_date_dummy,#request_date_dummy').datetimepicker({
 			pickTime:false,
 			useCurrent: true
@@ -54,10 +54,10 @@ jQuery(document).ready(function($){
 			pickDate: false
 		});
 
-		$("#estimate_duration_dummy").on("dp.change",function (e) {
+		/*$("#estimate_duration_dummy").on("dp.change",function (e) {
 		   var ndate = e.date;
 		   $("#estimate_duration").val(ndate.format("YYYY-MM-DD HH:mm:ss"));
-		});
+		});*/
 
 		$("#due_date_dummy").on("dp.change",function (e) {
 		   var ndate = e.date;
@@ -84,6 +84,16 @@ jQuery(document).ready(function($){
 		   $("#request_date").val(ndate.format("YYYY-MM-DD 00:00:00"));
 		});
 	}
+	$("input[name*='estimate_duration']").on('keyup keypress blur change', function(e) {
+
+		if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+		   return false;
+		}else{
+			if( $(this).val().length >= parseInt($(this).attr('maxlength')) && (e.which != 8 && e.which != 0)){
+				return false;
+			}
+		}
+	});
 	
 	$("#add_to_assign_user").click(function(){
 		var user_id = parseInt( $("#assign_user_list").val() );

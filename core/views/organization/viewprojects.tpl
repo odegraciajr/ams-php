@@ -33,6 +33,7 @@
 				  <tbody>
 					<?php if(is_array($projects) && count($projects)> 0):?>
 						<?php foreach( $projects as $project ):?>
+							<tr>
 							<td><?php echo App::Tools()->sanitize_text($project['name']);?></td>
 							<td><?php echo App::Tools()->sanitize_text($project['description']);?></td>
 							<td>
@@ -42,6 +43,7 @@
 							</td>
 							<td><?php echo App::Tools()->sanitize_text(date("d/m/Y",strtotime($project['date_created'])));?></td>
 							<td><a href="<?php echo $this->createUrl('/project/view/'.$project['id']);?>" class="btn btn-default btn-xs">View</a></td>
+							</tr>
 						<?php endforeach;?>
 					<?php else:?>
 						<tr><td colspan="5">No results</td></tr>
