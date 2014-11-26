@@ -1,7 +1,7 @@
 jQuery(document).ready(function($){
 	
 	function reportFormatter(row, cell, value, columnDef, dataContext) {
-		return '<a data-id="'+value+'" class="btn btn-primary btn-xs view-task-trigger" href="#">Task</a>';
+		return '<a data-id="'+value+'" class="btn btn-primary btn-xs view-task-trigger" href="#">View</a>';
 	}
 	
 	function viewTaskFormatter(row, cell, value, columnDef, dataContext) {
@@ -12,7 +12,7 @@ jQuery(document).ready(function($){
 	var columns = [
 		{id: "title", name: "Title", field: "title",width:220},
 		{id: "description", name: "Description",field: "description",width:260},
-		{id: "task", name: "Task", field: "task",cssClass: "column-center",formatter:reportFormatter}
+		{id: "task", name: "Tasks", field: "task",cssClass: "column-center",formatter:reportFormatter}
 	];
 	
 	var taskColumns = [

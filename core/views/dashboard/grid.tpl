@@ -24,7 +24,7 @@
 		<div class="col-md-6">
 			<div class="panel panel-default">
 				<!-- Default panel contents -->
-				<div class="panel-heading">Task</div>
+				<div class="panel-heading">Tasks</div>
 				<div class="panel-body">
 					<div id="taskGrid" style="height:400px;"></div>
 					<div class="clear"></div>
