@@ -146,6 +146,20 @@ class ProjectModel extends Model
 		return $sth->fetchAll();
 	}
 	
+	public function getAllProjects($user_id=null)
+	{
+		if(!$user_id) {
+			$user_id = App::User()->id;
+		}
+		
+		$sql = "SELECT * FROM project";
+		
+		$sth = $this->_db->prepare($sql);
+		$sth->execute();
+		
+		return $sth->fetchAll();
+	}
+	
 	public function getOrganizationProjects($org_id)
 	{
 

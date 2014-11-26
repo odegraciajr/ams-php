@@ -458,4 +458,18 @@ class ProjectController extends Controller
 
 		$this->render('verifynew',$params);
 	}
+	
+	public function getTaskListAjax()
+	{
+		$results = array('success' => false);
+		
+		if( isset( $_POST['proj_id'] ) ){
+
+			$tasks = $this->loadModel('ActivityModel')->getProjectActivity($_POST['proj_id']);
+			
+			$results = array('success' => true, 'tasks' => $tasks);
+		}
+		
+		App::Tools()->toJson($results,true);
+	}
 }

@@ -194,8 +194,8 @@ class ActivityModel extends Model
 	public function getProjectActivity($project_id)
 	{
 		$sql = "SELECT a.id,a.name,at.name AS type_name, CONCAT(u.first_name,' ',u.last_name) AS owner_name, ";
-		$sql .= "CONCAT(u2.first_name,' ',u2.last_name) AS requestor_name, ";
-		$sql .= "a.due_date, a.due_time, a.request_date , a.status, a.requestor,a.owner_id ";
+		$sql .= "CONCAT(u2.first_name,' ',u2.last_name) AS requestor_name, DATE_FORMAT(a.due_time,'%m/%d/%Y') AS nice_due_date, ";
+		$sql .= "a.due_date, a.due_time, a.request_date , a.status, a.requestor,a.owner_id,a.description ";
 		$sql .= "FROM activity AS a ";
 		$sql .= "LEFT JOIN activity_type AS at ON a.type_id=at.id ";
 		$sql .= "LEFT JOIN users AS u ON a.owner_id=u.id ";

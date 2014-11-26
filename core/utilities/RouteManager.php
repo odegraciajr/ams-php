@@ -16,6 +16,8 @@ class RouteManager extends CoreRouter
 	
 		$this->addRoutes(array(
 			array('GET|POST', '/', 'Controller@Index'),
+			array('POST', '/ajax/[a:controller]/[a:ajaxaction]', 'Ajax@CAction'),//ajaxcaller
+			array('POST', '/ajax/[a:controller]/[a:ajaxaction]/', 'Ajax@CAction'),//ajaxcaller
 			array('GET|POST', '/index.php', 'Controller@Index'),
 			array('GET|POST', '/index.php/', 'Controller@Index'),
 			array('GET|POST', '/[a:controller]/', 'Controller@Index'),
@@ -38,12 +40,15 @@ class RouteManager extends CoreRouter
 		$match = $this->match();
 		
 		if( $match ) {
-			
+			//var_dump($match);die();
 			if( isset( $match['params']['controller'] ) )
 				$this->controller = ucwords( strtolower( $match['params']['controller'] ) ) . 'Controller';
 			
 			if( isset( $match['params']['action'] ) )
 				$this->action = ucwords( strtolower( $match['params']['action'] ) ) . 'Action';
+				
+			if( isset( $match['params']['ajaxaction'] ) )
+				$this->ajaxaction = ucwords( strtolower( $match['params']['ajaxaction'] ) ) . 'Ajax';
 				
 			if( isset( $match['params']['pid'] ) )
 				$pid = intval( $match['params']['pid'] );
@@ -108,6 +113,18 @@ class RouteManager extends CoreRouter
 						$load = new $this->controller();
 						if($load->beforeAction($this->action))
 							$load->{$this->action}($pstring);
+					}
+					else {
+						self::set404();
+					}
+				break;
+				
+				case 'Ajax@CAction':
+											
+					if( is_callable( array($this->controller, $this->ajaxaction) ) ) {
+						$load = new $this->controller();
+						if($load->beforeAction($this->ajaxaction))
+							$load->{$this->ajaxaction}();
 					}
 					else {
 						self::set404();

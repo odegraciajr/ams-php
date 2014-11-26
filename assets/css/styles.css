@@ -105,3 +105,11 @@
 .forgot-link{
 	float: right;
 }
+
+/**SLICKGRID**/
+.slick-cell.column-center{
+	text-align: center;
+}
+a.view-task-trigger{
+	margin-top: 7px;
+}
