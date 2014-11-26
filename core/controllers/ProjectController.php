@@ -467,7 +467,7 @@ class ProjectController extends Controller
 
 			$tasks = $this->loadModel('ActivityModel')->getProjectActivity($_POST['proj_id']);
 			
-			$results = array('success' => true, 'tasks' => $tasks);
+			$results = array('success' => true, 'tasks' => $tasks, 'proj_id' => $_POST['proj_id']);
 		}
 		
 		App::Tools()->toJson($results,true);
