@@ -5,7 +5,7 @@ jQuery(document).ready(function($){
 	}
 	
 	function viewTaskFormatter(row, cell, value, columnDef, dataContext) {
-		return '<a class="btn btn-success btn-xs" href="'+value+'">View</a>';
+		return '<a class="btn btn-success btn-xs view-task-direct" href="'+value+'">View</a>';
 	}
 	
 	var grid,taskGrid;
@@ -16,8 +16,8 @@ jQuery(document).ready(function($){
 	];
 	
 	var taskColumns = [
-		{id: "title", name: "Title", field: "title"},
-		{id: "description", name: "Description", field: "description"},
+		{id: "title", name: "Title", field: "title",width:180},
+		//{id: "description", name: "Description", field: "description"},
 		{id: "owner_name", name: "Owner", field: "owner_name"},
 		{id: "due_date", name: "Due Date", field: "due_date"},
 		{id: "view", name: "View", field: "view",cssClass: "column-center",formatter:viewTaskFormatter}
@@ -70,7 +70,7 @@ jQuery(document).ready(function($){
 					$.each(tasks, function( i, value ) {
 						taskData[i] = {
 							title: value.name,
-							description: value.description,
+							//description: value.description,
 							owner_name: value.owner_name,
 							due_date: value.nice_due_date,
 							view: '/project/activity/'+data.proj_id+'/'+ value.id

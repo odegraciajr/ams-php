@@ -110,6 +110,6 @@
 .slick-cell.column-center{
 	text-align: center;
 }
-a.view-task-trigger{
+a.view-task-trigger,a.view-task-direct{
 	margin-top: 7px;
 }
