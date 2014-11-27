@@ -69,16 +69,23 @@ class AccountController extends Controller
 		$this->layout = 'login';
 		$data = [];
 		$data['error'] = false;
-		$data['login_email'] = "";
+		$data['email_default'] = "";
+		$data['password_default'] = "";
+		$data['invalid_login_counter'] = empty(App::getSession('invalid_login_counter' )) ? 0: App::getSession('invalid_login_counter' );
 		
 		if( App::getSession('login_email' ) ) {
-			$data['login_email'] = App::getSession('login_email' );
+			$data['email_default'] = App::getSession('login_email' );
 			App::setSession('login_email',false );
 		}
 			
 		if( App::User()->isGuest ){
 			if( isset( $_POST['email'] ) && isset( $_POST['password'] ) )
 			{
+				if(!$data['email_default'])
+					$data['email_default'] = $_POST['email'];
+					
+				$data['password_default'] = $_POST['password'];
+		
 				$remember = isset($_POST['remember']) ? isset($_POST['remember']) : 0;
 				
 				$login_attempt = $this->loadModel('AccountModel')->login($_POST['email'], $_POST['password'], $remember);
@@ -94,9 +101,13 @@ class AccountController extends Controller
 				
 				if( AccountModel::INVALID_EMAIL == $login_attempt ) {
 					$data['error_message'] = 'Invalid email address';
+					$data['invalid_login_counter']++;
+					App::setSession('invalid_login_counter',$data['invalid_login_counter'] );
 				}
 				elseif( AccountModel::INVALID_PASSWORD == $login_attempt ) {
 					$data['error_message'] = 'Invalid password';
+					$data['invalid_login_counter']++;
+					App::setSession('invalid_login_counter',$data['invalid_login_counter'] );
 				}
 				else {
 					$data['error_message'] = 'Account not yet verified. Please check your email and verify your account';
@@ -107,6 +118,8 @@ class AccountController extends Controller
 			}
 			$this->setPageTitle("Login");
 			
+			$this->add_script('https://www.google.com/recaptcha/api.js',true);
+			//App::setSession('invalid_login_counter',false );
 			$this->render('login',$data);
 		}
 		else {

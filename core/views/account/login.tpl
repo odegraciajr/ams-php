@@ -7,18 +7,26 @@
 	<?php endif;?>
 	
 	<form method="post" action="/account/login" class="form-horizontal" role="form">
-	  <div class="form-group">
-		<label for="email" class="col-sm-2 control-label">Email</label>
-		<div class="col-sm-10">
-		  <input type="email" value="<?php echo $login_email;?>" class="form-control" id="email" name="email" placeholder="email@account.com">
+		<div class="form-group">
+			<label for="email" class="col-sm-2 control-label">Email</label>
+			<div class="col-sm-10">
+				<input type="email" value="<?php echo $email_default;?>" class="form-control" id="email" name="email" placeholder="email@account.com">
+			</div>
 		</div>
-	  </div>
-	  <div class="form-group">
-		<label for="password" class="col-sm-2 control-label">Password</label>
-		<div class="col-sm-10">
-		  <input type="password" class="form-control" id="password" name="password" >
+		<div class="form-group">
+			<label for="password" class="col-sm-2 control-label">Password</label>
+			<div class="col-sm-10">
+				<input value="<?php echo $password_default;?>" type="password" class="form-control" id="password" name="password" >
+			</div>
 		</div>
-	  </div>
+		<?php if($invalid_login_counter >= 3):?>
+			<div class="form-group">
+				<label for="password" class="col-sm-2 control-label"></label>
+				<div class="col-sm-10">
+					<div class="g-recaptcha" data-type="image" data-sitekey="6LcGav4SAAAAAIJqjS8K8DS4xAK8nb4CLJlGyepa"></div>
+				</div>
+			</div>
+		<?php endif;?>
 	  <div class="form-group">
 		<div class="col-sm-offset-2 col-sm-10">
 		  <div class="checkbox">
