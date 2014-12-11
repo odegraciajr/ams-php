@@ -4,6 +4,40 @@ class DashboardController extends Controller
 {
 	public function indexAction()
 	{
+		$this->layout = 'main-test';
+		if( App::User()->isGuest )
+			RouteManager::redirect('/account/login');
+			
+		$this->setPageTitle('Dashboard');
+		$data = [];
+		
+		$this->add_style('/assets/css/jquery-ui.min.css');
+		$this->add_style('/assets/css/jquery.gridster.min.css');
+		
+		
+		$this->add_script('/assets/js/jquery.gridster.js',true);
+		$this->add_script('/assets/js/jquery-ui.min.js',true);
+		$this->add_script('/assets/js/widget.js',true);
+		
+		$this->render('index',$data);
+	}
+	
+	public function saveUserWidgetSettingsAction()
+	{
+		$settings = $_POST['settings'];
+		
+		$result = $this->loadModel('WidgetModel')->saveWidgetSettings($settings);
+		App::Tools()->toJson($result,true);
+	}
+	
+	public function getUserWidgetSettingsAction()
+	{
+		$result = $this->loadModel('WidgetModel')->getWidgetSettings();
+		App::Tools()->toJson($result,true);
+	}
+	
+	public function index2Action()
+	{
 		if( App::User()->isGuest )
 			RouteManager::redirect('/account/login');
 			

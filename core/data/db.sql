@@ -172,3 +172,13 @@ CREATE TABLE IF NOT EXISTS `meeting_attendees` (
   INDEX (`user_id` ASC)
 )
 ENGINE = InnoDB;
+
+CREATE TABLE IF NOT EXISTS `user_widget_settings` (
+  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_id` BIGINT(20) NOT NULL,
+  `settings` TEXT NULL,
+  PRIMARY KEY (`id`),
+  INDEX (`user_id` ASC),
+  UNIQUE(`user_id`)
+)
+ENGINE = InnoDB;

@@ -113,3 +113,47 @@
 a.view-task-trigger,a.view-task-direct{
 	margin-top: 7px;
 }
+/* Grid Layout */
+.gridster{
+	display:none;
+	height:100%;
+	width:99%;
+	background:none;
+	margin: 0px auto;
+}
+.gridster #gridstercontent{
+	background:none;
+	list-style-type:none;
+	margin-left:15px;
+}
+.gridtoolbar:hover{
+	background:#666;
+}
+.gridtoolbar {
+	width:25px;
+	cursor:pointer;
+	position:relative;
+	text-align:center;
+	float:right;
+	line-height:25px;
+	border-left:1px #777 solid;
+}
+.gridster .li {
+	background:#eee;
+	box-shadow: 2px 2px 1px 0px #eee;
+	border-radius:4px;
+}
+.gridtitle {
+	background :#4C4F53 repeat-x center top;
+	padding-left:5px;
+	height:25px;
+	color:#fff;
+	border: 1px #ddd solid;
+	line-height:25px;
+	font-size:15px;
+	font-weight:bold;
+}
+.gridtext {
+	float:left;
+	line-height:25px;
+}

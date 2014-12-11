@@ -126,5 +126,57 @@ class WidgetModel extends Model
 		die();
 	}
 	
+	public function saveWidgetSettings($settings=null,$user_id=null)
+	{
+	
+		if(!$user_id) {
+			$user_id = App::User()->id;
+		}
+		$settings = json_encode($settings, JSON_UNESCAPED_UNICODE);
+		
+		$sql = "INSERT INTO user_widget_settings (user_id, settings) VALUES(:user_id, :settings) ";
+		$sql .="ON DUPLICATE KEY UPDATE settings= :settings2";
+		
+		$sth = $this->_db->prepare($sql);
+		$sth->bindParam(':user_id', $user_id);  
+		$sth->bindParam(':settings', $settings, PDO::PARAM_STR);
+		$sth->bindParam(':settings2', $settings, PDO::PARAM_STR);
+		$sth->execute();
+		
+		$meta_id = $this->_db->lastInsertId();
+		
+		$results = array("status" => true, "id" => $meta_id);
+		
+		return $results;
+		
+	}
+	public function getWidgetSettings($settings=null,$user_id=null)
+	{
+		$results = array("status" => false);
+		
+		if(App::User()->id){
+			$user_id = App::User()->id;
+			
+			$sql = "SELECT settings FROM user_widget_settings WHERE user_id=?";
+
+			$sth = $this->_db->prepare($sql);
+			$sth->bindValue(1, $user_id, PDO::PARAM_INT);
+			$sth->execute();
+			
+			if ($sth->rowCount() > 0) {
+				//json_decode($json, true);
+				//var_dump($sth->fetch());die;
+				$data = $sth->fetch();
+				
+				$results = array("status" => true, "results" => json_decode($data['settings'], true));
+			}
+			else{
+				$results = array("status" => true, "results" => false);
+			}
+			
+		}
+		return $results;
+	}
+	
 	
 }

@@ -16,8 +16,8 @@ class RouteManager extends CoreRouter
 	
 		$this->addRoutes(array(
 			array('GET|POST', '/', 'Controller@Index'),
-			array('POST', '/ajax/[a:controller]/[a:ajaxaction]', 'Ajax@CAction'),//ajaxcaller
-			array('POST', '/ajax/[a:controller]/[a:ajaxaction]/', 'Ajax@CAction'),//ajaxcaller
+			//array('POST', '/ajax/[a:controller]/[a:ajaxaction]', 'Ajax@CAction'),//ajaxcaller
+			//array('POST', '/ajax/[a:controller]/[a:ajaxaction]/', 'Ajax@CAction'),//ajaxcaller
 			array('GET|POST', '/index.php', 'Controller@Index'),
 			array('GET|POST', '/index.php/', 'Controller@Index'),
 			array('GET|POST', '/[a:controller]/', 'Controller@Index'),
