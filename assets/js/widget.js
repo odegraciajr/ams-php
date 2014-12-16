@@ -12,12 +12,17 @@ jQuery(document).ready(function($){
 	});
 	
 	$("#reset-widget").click(function(){
-		//console.log($(this).data("widget-id"));
-		var reset = widget.connect.resetUserWidgetSettings();
-		reset.done(function(){
-			$(".gridster").empty().append('<ul id="gridstercontent"></ul>');
-			widget.core.loadWidget(widgetTemplate,0);
-		});
+
+		var ask = confirm("Are you sure you want to reset widgets?");
+		if (ask == true) {
+			var reset = widget.connect.resetUserWidgetSettings();
+			reset.done(function(){
+				$(".gridster").empty().append('<ul id="gridstercontent"></ul>');
+				widget.core.loadWidget(widgetTemplate,0);
+			});
+		}
+		
+		
 	});
 	
 	widget.core.init();
