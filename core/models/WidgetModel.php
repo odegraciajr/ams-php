@@ -126,26 +126,55 @@ class WidgetModel extends Model
 		die();
 	}
 	
-	public function saveWidgetSettings($settings=null,$user_id=null)
+	public function saveWidgetSettings($settings=null,$tab=1,$tab_name=null,$widget_id=null,$user_id=null)
 	{
 	
 		if(!$user_id) {
 			$user_id = App::User()->id;
 		}
-		$settings = json_encode($settings, JSON_UNESCAPED_UNICODE);
 		
-		$sql = "INSERT INTO user_widget_settings (user_id, settings) VALUES(:user_id, :settings) ";
-		$sql .="ON DUPLICATE KEY UPDATE settings= :settings2";
-		
+		$sql = "SELECT widget_id FROM user_widget_settings WHERE user_id=? AND tab_order=?";
+
 		$sth = $this->_db->prepare($sql);
-		$sth->bindParam(':user_id', $user_id);  
-		$sth->bindParam(':settings', $settings, PDO::PARAM_STR);
-		$sth->bindParam(':settings2', $settings, PDO::PARAM_STR);
+		$sth->bindValue(1, $user_id, PDO::PARAM_INT);
+		$sth->bindValue(2, $tab, PDO::PARAM_INT);
 		$sth->execute();
 		
-		$meta_id = $this->_db->lastInsertId();
+		$settings = json_encode($settings, JSON_UNESCAPED_UNICODE);
+		if($tab_name==null){
+			$tab_name = "Tab ".$tab;
+		}
 		
-		$results = array("status" => true, "id" => $meta_id);
+		if ($sth->rowCount() > 0) {
+			$data = $sth->fetch();
+			
+			$sql = "UPDATE user_widget_settings SET widget_settings=?,tab_name=? WHERE widget_id=?";
+			
+			$sth = $this->_db->prepare($sql);
+			$sth->bindValue(1, $settings, PDO::PARAM_STR);
+			$sth->bindValue(2, $tab_name, PDO::PARAM_STR);
+			$sth->bindValue(3, $data['widget_id'], PDO::PARAM_INT);
+			$sth->execute();
+			
+			$meta_id = $this->_db->lastInsertId();
+			
+			$results = array("status" => true, "id" => $meta_id);
+		}
+		else{
+			$sql = "INSERT INTO user_widget_settings (user_id, widget_settings,tab_name,tab_order) VALUES(:user_id, :settings,:tab_name,:tab_order) ";
+			
+			$sth = $this->_db->prepare($sql);
+			$sth->bindParam(':user_id', $user_id);
+			$sth->bindParam(':settings', $settings, PDO::PARAM_STR);
+			$sth->bindParam(':tab_name', $tab_name, PDO::PARAM_STR);
+			$sth->bindParam(':tab_order', $tab, PDO::PARAM_INT);
+			$sth->execute();
+			
+			$meta_id = $this->_db->lastInsertId();
+			
+			$results = array("status" => true, "id" => $meta_id);
+		}
+
 		
 		return $results;
 		
@@ -157,7 +186,7 @@ class WidgetModel extends Model
 		if(App::User()->id){
 			$user_id = App::User()->id;
 			
-			$sql = "SELECT settings FROM user_widget_settings WHERE user_id=?";
+			$sql = "SELECT widget_id,widget_settings,tab_name,tab_order FROM user_widget_settings WHERE user_id=?";
 
 			$sth = $this->_db->prepare($sql);
 			$sth->bindValue(1, $user_id, PDO::PARAM_INT);
@@ -168,7 +197,7 @@ class WidgetModel extends Model
 				//var_dump($sth->fetch());die;
 				$data = $sth->fetch();
 				
-				$results = array("status" => true, "results" => json_decode($data['settings'], true));
+				$results = array("status" => true, "results" => json_decode($data['widget_settings'], true), 'widget_id' => $data['widget_id']);
 			}
 			else{
 				$results = array("status" => true, "results" => false);
@@ -177,6 +206,5 @@ class WidgetModel extends Model
 		}
 		return $results;
 	}
-	
-	
+
 }

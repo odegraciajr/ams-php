@@ -17,6 +17,8 @@ class DashboardController extends Controller
 		
 		$this->add_script('/assets/js/jquery.gridster.js',true);
 		$this->add_script('/assets/js/jquery-ui.min.js',true);
+		$this->add_script('/assets/js/widget.templates.js',true);
+		$this->add_script('/assets/js/widget.core.js',true);
 		$this->add_script('/assets/js/widget.js',true);
 		
 		$this->render('index',$data);
@@ -25,6 +27,9 @@ class DashboardController extends Controller
 	public function saveUserWidgetSettingsAction()
 	{
 		$settings = $_POST['settings'];
+		$widget_id = isset($_POST['widget_id']) ? $_POST['widget_id']: 0;
+		$tab_id = isset($_POST['tab_id']) ? $_POST['tab_id']: 1;
+		$tab_name = isset($_POST['tab_name']) ? $_POST['tab_name']: 1;
 		
 		$result = $this->loadModel('WidgetModel')->saveWidgetSettings($settings);
 		App::Tools()->toJson($result,true);

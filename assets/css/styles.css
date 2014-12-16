@@ -143,6 +143,9 @@ a.view-task-trigger,a.view-task-direct{
 	box-shadow: 2px 2px 1px 0px #eee;
 	border-radius:4px;
 }
+.gridster .li.disabled{
+	display:none;
+}
 .gridtitle {
 	background :#4C4F53 repeat-x center top;
 	padding-left:5px;

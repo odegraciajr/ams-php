@@ -182,3 +182,25 @@ CREATE TABLE IF NOT EXISTS `user_widget_settings` (
   UNIQUE(`user_id`)
 )
 ENGINE = InnoDB;
+
+/**WIDGET DB**/
+CREATE TABLE IF NOT EXISTS `user_meta` (
+  `umeta_id` INT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_id` BIGINT(20) NOT NULL,
+  `meta_key` VARCHAR(255) NULL,
+  `meta_value` LONGTEXT NULL,
+  PRIMARY KEY (`umeta_id`),
+  KEY `user_id` (`user_id`),
+  KEY `meta_key` (`meta_key`)
+)
+ENGINE = InnoDB;
+CREATE TABLE IF NOT EXISTS `user_widget_settings` (
+  `widget_id` INT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_id` BIGINT(20) NOT NULL,
+  `widget_settings` LONGTEXT NULL,
+  `tab_name` VARCHAR(255) NULL,
+  `tab_order` TINYINT(1) UNSIGNED NULL,
+  PRIMARY KEY (`widget_id`),
+  KEY `user_id` (`user_id`)
+)
+ENGINE = InnoDB;
