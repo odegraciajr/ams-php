@@ -16,13 +16,16 @@ jQuery(document).ready(function($){
 		
 		var ask = confirm("Are you sure you want to reset widgets?");
 		if (ask == true) {
-			var reset = widget.connect.resetUserWidgetSettings();
+			/*var reset = widget.connect.resetUserWidgetSettings();
 			reset.done(function(){
-				$("#gridsterwidget-"+widget_id).empty().append('<ul class="gridstercontent"></ul>');
-				widget.core.loadWidget(widgetTemplate,0);
-			});
+				$("#gridstercontent-"+widget_id).empty();
+				widget.core.loadWidget(widgetTemplate,widget_id);
+			});*/
+			//console.log(widget_id);
+			widget.connect.resetUserWidgetSettings(widget_id);
 		}
 	});
+	
 	$('[data-toggle="tooltip"]').tooltip();
 	
 	widget.core.init();
@@ -31,9 +34,23 @@ jQuery(document).ready(function($){
 		//console.log(e.target); // newly activated tab
 		//console.log(e.relatedTarget); // previous active tab
 		var widget_id = $(e.target).data("widget-id");
-		$(".widget-list-wrap").css("width",$(".tab-content").width());
+		var grid_active = $("#gridstercontent-"+widget_id).data('grid-active');
+		if(!grid_active){
+			widget.core.activateGrid(widget_id);
+		}
 	});
-	$("#test-width").click(function(){
-		console.log($(".tab-content").width());
+	
+	$("#widget-add-tab").click(function(){
+		var tab_name = prompt("Please enter the name of the tab", "");
+
+		if (tab_name != null) {
+			var create = widget.connect.createWidgetSettings(tab_name);
+			create.done(function(){
+				 location.reload();
+			});
+		}
 	});
+	
+	
+	
 });

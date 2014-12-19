@@ -126,25 +126,26 @@ class WidgetModel extends Model
 		die();
 	}
 	
-	public function saveWidgetSettings($settings=null,$tab=1,$tab_name=null,$widget_id=null,$user_id=null)
+	public function saveWidgetSettings($settings=null,$widget_id=null,$tab_name=null,$tab=1,$user_id=null)
 	{
 	
 		if(!$user_id) {
 			$user_id = App::User()->id;
 		}
 		
-		$sql = "SELECT widget_id FROM user_widget_settings WHERE user_id=? AND tab_order=?";
+		$sql = "SELECT widget_id FROM user_widget_settings WHERE user_id=? AND widget_id=?";
 
 		$sth = $this->_db->prepare($sql);
 		$sth->bindValue(1, $user_id, PDO::PARAM_INT);
-		$sth->bindValue(2, $tab, PDO::PARAM_INT);
+		$sth->bindValue(2, $widget_id, PDO::PARAM_INT);
 		$sth->execute();
 		
 		$settings = json_encode($settings, JSON_UNESCAPED_UNICODE);
 		if($tab_name==null){
 			$tab_name = "Tab ".$tab;
 		}
-		
+
+		//var_dump($data);die;
 		if ($sth->rowCount() > 0) {
 			$data = $sth->fetch();
 			
@@ -184,7 +185,8 @@ class WidgetModel extends Model
 		$results = array("status" => false);
 		
 		if(App::User()->id){
-			$user_id = App::User()->id;
+			if($user_id===null)
+				$user_id = App::User()->id;
 			
 			$sql = "SELECT widget_id,widget_settings AS settings,tab_name,tab_order FROM user_widget_settings WHERE user_id=?";
 
@@ -206,16 +208,32 @@ class WidgetModel extends Model
 						$newdata[$k]['tab_order'] = $v['tab_order'];
 				}
 				
-				//var_dump($data);die;
-				
 				$results = array("status" => true, "userWidgets" => $newdata);
 			}
 			else{
-				$results = array("status" => true, "widgets" => false);
+				$results = array("status" => true, "userWidgets" => false);
 			}
 			
 		}
 		return $results;
+	}
+	
+	public function createWidgetSettingsTab($settings,$tab_name,$user_id=null)
+	{
+		if($user_id===null)
+			$user_id = App::User()->id;
+
+		$sql = "INSERT INTO user_widget_settings (user_id, widget_settings,tab_name) VALUES(:user_id, :settings,:tab_name) ";
+
+		$sth = $this->_db->prepare($sql);
+		$sth->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+		$sth->bindParam(':settings', $settings, PDO::PARAM_STR);
+		$sth->bindParam(':tab_name', $tab_name, PDO::PARAM_STR);
+		$sth->execute();
+
+		$meta_id = $this->_db->lastInsertId();
+
+		return array("status" => true, "id" => $meta_id);
 	}
 
 }

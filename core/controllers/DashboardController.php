@@ -29,15 +29,24 @@ class DashboardController extends Controller
 		$settings = $_POST['settings'];
 		$widget_id = isset($_POST['widget_id']) ? $_POST['widget_id']: 0;
 		$tab_id = isset($_POST['tab_id']) ? $_POST['tab_id']: 1;
-		$tab_name = isset($_POST['tab_name']) ? $_POST['tab_name']: 1;
+		$tab_name = isset($_POST['tab_name']) ? $_POST['tab_name']: null;
 		
-		$result = $this->loadModel('WidgetModel')->saveWidgetSettings($settings);
+		$result = $this->loadModel('WidgetModel')->saveWidgetSettings($settings,$widget_id,$tab_name,$tab_id);
 		App::Tools()->toJson($result,true);
 	}
 	
 	public function getUserWidgetSettingsAction()
 	{
 		$result = $this->loadModel('WidgetModel')->getWidgetSettings();
+		App::Tools()->toJson($result,true);
+	}
+	
+	public function createUserWidgetSettingsAction()
+	{
+		$settings = $_POST['settings'];
+		$tab_name = isset($_POST['tab_name']) ? $_POST['tab_name']: null;
+		
+		$result = $this->loadModel('WidgetModel')->createWidgetSettingsTab($settings,$tab_name);
 		App::Tools()->toJson($result,true);
 	}
 	

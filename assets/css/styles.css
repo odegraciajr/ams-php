@@ -121,7 +121,6 @@ a.view-task-trigger,a.view-task-direct{
 }
 /* Grid Layout */
 .gridster{
-	display:none;
 	height:100%;
 	width:100%;
 	background:none;

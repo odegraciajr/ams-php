@@ -204,3 +204,5 @@ CREATE TABLE IF NOT EXISTS `user_widget_settings` (
   KEY `user_id` (`user_id`)
 )
 ENGINE = InnoDB;
+
+DROP TABLE user_meta;DROP TABLE user_widget_settings;

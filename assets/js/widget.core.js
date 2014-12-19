@@ -8,7 +8,7 @@ var widget = {
 		 * @return none
 		 */ 
 		init: function(){
-			var widgetAjax = widget.connect.userWidgetSettings;
+			var widgetAjax = widget.connect.userWidgetSettings();
 			
 			widgetAjax.done(function(obj){
 				if(obj.status && obj.userWidgets && obj.userWidgets.length > 0){
@@ -16,24 +16,26 @@ var widget = {
 					//widget.core.loadWidget(obj.results,obj.widget_id);
 					
 					$.each(obj.userWidgets,function(key,val){
-						//console.log(val.widget_id);
 						if(val.settings){
 							widget.core.loadWidget(val,val.widget_id);
 						}
 						else{
 							widget.core.loadWidget({settings:widgetTemplate},val.widget_id);
 						}
+						if(key==0){
+							widget.core.activateGrid(val.widget_id);
+						}
 					});
 				}
 				else{
 					widget.core.loadWidget({settings:widgetTemplate},1);
+					widget.core.activateGrid(1);
+					widget.connect.saveUserWidgetSettings(1);
+					
 				}
 			});
 		},
 		loadWidget: function (widgets,widget_id){
-			var gridx = $(".tab-content").width() /4-17;
-			var gridy = $(document).height()/8 -10;
-
 			var widgetul = $('<ul></ul>').addClass('widget-list-wrap');
 			
 			$.each( widgets.settings, function( key, value ) {
@@ -49,7 +51,7 @@ var widget = {
 					.attr("data-min-sizey",value.settings.minsizey);
 					
 				if(value.settings.active==0){
-					widgetli.addClass('disabled');
+					widgetli.addClass('disabled').hide();
 				}
 				
 				if( typeof value.html == "undefined" ){
@@ -63,41 +65,44 @@ var widget = {
 				widgetli.append(htmlInner.replace(/\\\\/g,"\\").replace(/&#34;/g,'"').replace(/&#39;/g, "'"));
 				
 				widgetul.append(widgetli);
-				$("#gridstercontent-"+widget_id).append(widgetul).data("widget-id",widget_id);
+				$("#gridstercontent-"+widget_id).append(widgetul).data("widget-id",widget_id).data('grid-active',false);
 			});
 			
-			$(document).on("click",".gridster li .grid-remove",function(e){
+			//$(document).on("click",".gridster li .grid-remove",function(e){
+			$("#gridstercontent-"+widget_id+" span.grid-remove").click(function(e){
 				e.preventDefault();
+				e.stopPropagation();
+				
 				var p = $(this).parent().parent();
-				p.fadeOut(function(){
+				var li = p.parent().parent();
+				var widget_id = li.data('widget-id');
+				p.fadeOut(400,function(){
 					p.addClass('disabled');
-					//widget.connect.saveUserWidgetSettings();
+					widget.connect.saveUserWidgetSettings(widget_id);
 				});
 			});
+		},
+		activateGrid: function(widget_id){
+			var gridx = $(".tab-content").width() /4-17;
+			var gridy = $(document).height()/8 -10;
 			
-			$(".gridster ul").gridster({
+			$("#gridstercontent-"+widget_id+" ul").gridster({
 				widget_margins: [2,3],
 				widget_base_dimensions: [gridx,gridy],
 				resize: {
 					enabled: true,
 					stop: function(e, ui, $widget) {
-						//widget.connect.saveUserWidgetSettings();
+						widget.connect.saveUserWidgetSettings(widget_id);
 					}
 				},
 				draggable: {
 					handle: ".gridtitle, .gridtext",
 					stop: function(e){
-						//widget.connect.saveUserWidgetSettings();
+						widget.connect.saveUserWidgetSettings(widget_id);
 					}
 				}
-			});
-			$(".gridster").show();
-		},
-		setWidgetIDtoElement: function(elem){
-			$("#"+elem).data("widget-id",widget.core.getCurrentWidgetID());
-		},
-		getCurrentWidgetID: function(){
-			return $("#gridstercontent-1").data("widget-id");
+			}).data('grid-active',true);
+			//$("#gridstercontent-"+widget_id+" ul").show();
 		}
 	},
 	/**
@@ -106,13 +111,17 @@ var widget = {
 	 * @return Object jQuery $.post
 	 */ 
 	connect:{
-		userWidgetSettings:new function(){
+		userWidgetSettings:function(){
 			return $.post('/dashboard/getuserwidgetsettings');
 		},
-		saveUserWidgetSettings:function(){
+		createWidgetSettings:function(tab_name){
+			return $.post('/dashboard/createuserwidgetsettings',{settings:null,tab_name:tab_name});
+		},
+		saveUserWidgetSettings:function(widget_id){
 			var widgetSettings = {};
-
-			$(".gridster ul li").each(function(i, el){
+			var tab_name = $("#gridstercontent-"+widget_id).data('tab-name');
+			
+			$("#gridstercontent-"+widget_id+" li").each(function(i, el){
 				var li = $(this);
 				var gridID = li.attr("id");
 				
@@ -130,14 +139,23 @@ var widget = {
 					}
 				}
 			});
-			$.post('/dashboard/saveuserwidgetsettings',{settings:widgetSettings});
+			//console.log({settings:widgetSettings,widget_id:widget_id});
+			$.post('/dashboard/saveuserwidgetsettings',{settings:widgetSettings,widget_id:widget_id,tab_name:tab_name});
 		},
-		resetUserWidgetSettings:function(id,reset){
-			widget_id = 0;
-			if( typeof id != "undefined"){
-				widget_id = id;
-			}
-			return $.post('/dashboard/saveuserwidgetsettings',{widget_id:widget_id,settings:''});
+		resetUserWidgetSettings:function(widget_id){
+			var theGrid = $("#gridstercontent-"+widget_id);
+			
+			var tab_name = theGrid.data('tab-name');
+			
+			theGrid.draggable().draggable("destroy");
+			theGrid.removeData();
+			theGrid.empty();
+			
+			widget.core.loadWidget({settings:widgetTemplate},widget_id);
+			widget.core.activateGrid(widget_id);
+			
+			var reset = $.post('/dashboard/saveuserwidgetsettings',{settings:null,widget_id:widget_id,tab_name:tab_name});
+			//console.log(widgetTemplate);
 		}
 		
 	}
