@@ -4,7 +4,7 @@ var widgetTemplate = [
 			id: 'projects',
 			title: 'Projects',
 			html: '<div class="gridtitle"><a class="gridtext"><span class="glyphicon glyphicon glyphicon-file aria-hidden="true"></span> Projects</a><span class="glyphicon glyphicon-remove gridtoolbar grid-remove" aria-hidden="true"></span></i></div>',
-			settings: {row: 1,col: 1,sizex:2,sizey:2,minsizex:1,minsizey:1,active:1}
+			settings: {row: 1,col: 1,sizex:2,sizey:3,minsizex:1,minsizey:1,active:1}
 		},
 		{
 			id: 'organization',

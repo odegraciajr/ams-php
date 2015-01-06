@@ -29,14 +29,16 @@ jQuery(document).ready(function($){
 	$('[data-toggle="tooltip"]').tooltip();
 	
 	widget.core.init();
-	//widget.core.setWidgetIDtoElement("reset-widget");
+	
 	$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-		//console.log(e.target); // newly activated tab
-		//console.log(e.relatedTarget); // previous active tab
-		var widget_id = $(e.target).data("widget-id");
-		var grid_active = $("#gridstercontent-"+widget_id).data('grid-active');
-		if(!grid_active){
-			widget.core.activateGrid(widget_id);
+
+		var tab_id = $(e.target).data("widget-id");
+		var grid_active = $("#tab"+tab_id).data('tab-activated');
+		if(grid_active != true){
+			widget.core.activateGrid(tab_id);
+			widget.core.activateWidget();
+		}else{
+			widget.core.activateWidget();
 		}
 	});
 	
@@ -50,7 +52,4 @@ jQuery(document).ready(function($){
 			});
 		}
 	});
-	
-	
-	
 });

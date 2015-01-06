@@ -162,6 +162,37 @@ a.view-task-trigger,a.view-task-direct{
 	float:left;
 	line-height:25px;
 }
+.gridster > *{
+	-moz-box-sizing: unset;
+       box-sizing: unset;
+}
+.ams-widget-cotent{
+	height: auto;
+	padding: 10px;
+	width: auto;
+	font-family: "Tahoma";
+    font-size: 8pt;
+}
+.ams-widget-cotent p{
+	
+}
+.ams-widget-cotent .slick-column-name {
+	color: #fff;
+	font-family: "Tahoma";
+	font-size: 1.1em;
+	font-weight: bold;
+}
+.ams-widget-cotent .slick-cell{
+	font-size: 1em;
+	font-weight: normal;
+	font-family: "Tahoma";
+}
+.ams-widget-cotent .slick-header-column.ui-state-default{
+	background: none repeat-x scroll center top #4c4f53;
+}
+.ams-widget-cotent .slick-header-column.ui-state-default.ui-state-hover{
+	background: none repeat-x scroll center top #428bca;
+}
 #widget-new-design .nav-tabs > li > a{
 	outline:none;
 }

@@ -11,15 +11,37 @@ class DashboardController extends Controller
 		$this->setPageTitle('Dashboard');
 		$data = [];
 		
-		$this->add_style('/assets/css/jquery-ui.min.css');
+		//activate slick-grid
+		$this->add_style('/assets/js/slick/slick.grid.css');
+		//$this->add_style('/assets/css/smoothness/jquery-ui-1.8.16.custom.css');
+		$this->add_style('/assets/js/slick/slick-default-theme.css');
+		$this->add_style('/assets/js/slick/controls/slick.pager.css');
+		
+		$this->add_style('/assets/css/slick-default-theme.css');
+		$this->add_style('/assets/css/slick.css');
+		
+		$this->add_script('/assets/js/slick/jquery.event.drag-2.2.js',true);
+		$this->add_script('/assets/js/slick/slick.core.js',true);
+		$this->add_script('/assets/js/slick/slick.grid.js',true);
+		$this->add_script('/assets/js/slick/slick.dataview.js',true);
+		$this->add_script('/assets/js/slick/controls/slick.pager.js',true);
+		
+		$this->add_style('//ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css');
 		$this->add_style('/assets/css/jquery.gridster.min.css');
 		
 		
 		$this->add_script('/assets/js/jquery.gridster.js',true);
 		$this->add_script('/assets/js/jquery-ui.min.js',true);
-		$this->add_script('/assets/js/widget.templates.js',true);
-		$this->add_script('/assets/js/widget.core.js',true);
-		$this->add_script('/assets/js/widget.js',true);
+		
+		//loadwidget cores
+		$this->add_script('/assets/widgets/widget.templates.js',true);
+		$this->add_script('/assets/widgets/widget.core.js',true);
+		
+		//load widget plugins
+		$this->add_script('/assets/widgets/plugins/projects.js',true);
+		
+		//load widget init
+		$this->add_script('/assets/widgets/widget.js',true);
 		
 		$this->render('index',$data);
 	}
@@ -86,6 +108,7 @@ class DashboardController extends Controller
 		$this->add_script('/assets/js/slick/jquery.event.drag-2.2.js',true);
 		$this->add_script('/assets/js/slick/slick.core.js',true);
 		$this->add_script('/assets/js/slick/slick.grid.js',true);
+		$this->add_script('/assets/js/slick/slick.dataview.js',true);
 		$this->add_script('/assets/js/slick/scripts.slick.js',true);
 		$this->render('grid',$params);
 	}
