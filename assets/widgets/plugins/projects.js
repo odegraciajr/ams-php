@@ -22,7 +22,7 @@ var projects = {
 		"fields": [{id:"Contract",column:"Contract" ,editable: -1},{id:"Facility", column: "Facility",editable: -1},{id:"Program", column: "Program" ,editable: -1},{id:"Platform", column:"Platform" },{id:"PartNumber",column:"Part Number"},{id:"PartDescription",column:"Part Description"},{id:"CreativityTeam", column: "Creativity Team"},{id:"SMT", column: "SMT"},{id:"BuyerCode",column: "Buyer Code"}, {id:"BuyerName",column:"Buyer Name"},{id:"LBE",column:"Legal Business Entity"},{id:"IssueDate", column: "Contract Issue Date"},{id:"EffectiveDate", column :"Contract Effective Date"},{id:"ExpirationDate", column: "Contract Expiration Date"},{id:"PriceEffectiveDate",column: "Price Effective Date"},{id:"PriceExpirationDate", column: "Price Expiration Date"},{id:"ManufacturingDUNS", column: "Manufacturing DUNS"},{id:"ManufacturingSupplier", column : "Manufacturing Name"},{id:"ManufacturingSupplierCountry", column : "Manufacturing Country"},{id:"HeaderDUNS", column : "Header DUNS"},{id:"HeaderSupplier", column : "Header Name" },{id:"HeaderSupplierCountry", column : "Header  Country" },{id:"ShipDUNS", column : "Ship From DUNS" },{id:"ShipSupplier", column : "Ship From Name" },{id:"ShipSupplierCountry", column : "Ship From Country"},{id:"UltimateDUNS", column : "Ultimate DUNS"},{id:"UltimateSupplier", column : "Ultimate Name"},{id:"UltimateSupplierCountry", column: "Ultimate  Country" },{id:"Currency", column:"Currency"},{id:"TotalPrice", column: "Total Price"},{id:"BasePrice", column: "Base Price"},{id:"AddonPrice", column: "Add on Price"},{id:"BaseMaterial", column: "Base Material Price"},{id:"APVCY", column: "2014 APV &#128;"},{id:"APVNY",column: "2015 APV &#128;"},{id:"VolumeCY", column: "2014 Volume"},{id:"VolumeNY",column: "2015 Volume"},{id:"ITBCY",column: "2014 ITB &#128;"},{id:"ITBNY", column:"2015 ITB &#128;"}],
 		"timeout":null,
 		"defaultColumns": [{id: "Contract", column: "Contract" , editable: -1}, {id:"Facility",column: "Facility"}, {id:"Program",column: "Program"},{id:"PartNumber",column:"Part Number"},{id: "APVCY",column: "2014 APV &#128;"}, {id: "APVNY", column: "2015 APV &#128;"}],
-		"selectedColumns" :{},
+		"userColumns" :{},
 		"filters":{},	
 		"filters2": {},
 		"pager": {},
@@ -41,7 +41,18 @@ var projects = {
 		"copyRecordset": false,
 		
 		//Load contract details
-		"init" : function(id){
+		"init" : function(id,settings){
+			//console.log(settings);
+			
+			if( typeof settings != "undefined" &&  settings.length){
+				widget.projects.userColumns[id] = settings;
+			}
+			else{
+				widget.projects.userColumns[id] = widget.projects.columns;
+			}
+			
+			//console.log(widget.projects.userColumns[id]);
+			
 			return '<div id="project-grid-'+id+'" style="width:100%;height:200px;"></div><div id="pager-'+id+'" style="width:100%;height:20px;"></div>';
 		},
 		"render" : function(id){
@@ -75,18 +86,22 @@ var projects = {
 			}
 			
 			dataView = new Slick.Data.DataView({ inlineFilters: true });
-			grid = new Slick.Grid('#project-grid-'+id, dataView, widget.projects.columns, options);
-			var pager = new Slick.Controls.Pager(dataView, grid, $("#pager-"+id));
+			//grid = 
+			widget.projects.grid[id] = new Slick.Grid('#project-grid-'+id, dataView, widget.projects.userColumns[id], options);
+			widget.projects.pager[id] = new Slick.Controls.Pager(dataView, widget.projects.grid[id], $("#pager-"+id));
 
 			// wire up model events to drive the grid
 			dataView.onRowCountChanged.subscribe(function (e, args) {
-			  grid.updateRowCount();
-			  grid.render();
+			  widget.projects.grid[id].updateRowCount();
+			  widget.projects.grid[id].render();
 			});
 
 			dataView.onRowsChanged.subscribe(function (e, args) {
-			  grid.invalidateRows(args.rows);
-			  grid.render();
+			  widget.projects.grid[id].invalidateRows(args.rows);
+			  widget.projects.grid[id].render();
+			});
+			widget.projects.grid[id].onColumnsReordered.subscribe(function(e,args){
+				widget.connect.saveUserWidgetSettings(id);
 			});
 			//grid.autosizeColumns();
 			
@@ -95,9 +110,18 @@ var projects = {
 			dataView.setFilter(myFilter);
 			dataView.setFilterArgs(0);
 			dataView.endUpdate();
+		},
+		"getWidgetMainSettings" : function(id){
+			var settings = [];
 			
-			
+			$.each(widget.projects.grid[id].getColumns(), function(i,value){
+					settings.push({id: value.id, name: value.name, field: value.field, behavior: value.behavior, cssClass: value.cssClass,
+					width: value.width, resizable: value.resizable, selectable: value.selectable });
+			});
+			widget.projects.userColumns[id] = settings;
+			return settings;
 		}
+		
 	}
 }
 

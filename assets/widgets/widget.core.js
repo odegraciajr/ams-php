@@ -68,7 +68,7 @@ var widget = {
 				
 				widgetli.append(htmlInner.replace(/\\\\/g,"\\").replace(/&#34;/g,'"').replace(/&#39;/g, "'"));
 				
-				var inner_widget = (typeof widget[value.id] != "undefined") ? widget[value.id].init(widget_id) : value.id;
+				var inner_widget = (typeof widget[value.id] != "undefined") ? widget[value.id].init(widget_id,value.settings.widgetMain) : value.id;
 				widgetli.append(widgetContent.append(inner_widget));
 				//widgetli.append('<div class="clear"></div>');
 				widgetul.append(widgetli);
@@ -139,6 +139,7 @@ var widget = {
 		},
 		saveUserWidgetSettings:function(widget_id){
 			var widgetSettings = {};
+			var widgetMainSettings ={};
 			var tab_name = $("#gridstercontent-"+widget_id).data('tab-name');
 			
 			$("#gridstercontent-"+widget_id+" li").each(function(i, el){
@@ -152,14 +153,19 @@ var widget = {
 				if( typeof gridID != "undefined" ){
 				
 					var id = gridID.replace("grid-","");
+
+					if(typeof widget[id] != "undefined"){
+
+						widgetMainSettings = widget[id].getWidgetMainSettings(widget_id);
+					}
 					widgetSettings[i] = {
 						id: id,
 						title: li.attr("title"),
-						settings: {row:li.attr("data-row"),col:li.attr("data-col"),sizex:li.attr("data-sizex"),sizey:li.attr("data-sizey"),active:active}
+						settings: {row:li.attr("data-row"),col:li.attr("data-col"),sizex:li.attr("data-sizex"),sizey:li.attr("data-sizey"),active:active,widgetMain:widgetMainSettings}
 					}
 				}
 			});
-			//console.log({settings:widgetSettings,widget_id:widget_id});
+			//console.log(widgetMainSettings);
 			$.post('/dashboard/saveuserwidgetsettings',{settings:widgetSettings,widget_id:widget_id,tab_name:tab_name});
 		},
 		resetUserWidgetSettings:function(widget_id){
@@ -173,6 +179,7 @@ var widget = {
 			
 			widget.core.loadWidget({settings:widgetTemplate},widget_id);
 			widget.core.activateGrid(widget_id);
+			widget.core.activateWidget();
 			
 			var reset = $.post('/dashboard/saveuserwidgetsettings',{settings:null,widget_id:widget_id,tab_name:tab_name});
 			//console.log(widgetTemplate);
