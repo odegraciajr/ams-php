@@ -1,29 +1,27 @@
-# DATASTREAM SOLUTIONS: AMS #
+# Summary Plugin for SlickGrid #
 
-A Project manager application for DataStream Solutions
+SlickGrid plugin for displaying summary of each table columns.
 
-### What is this repository for? ###
+#### Current Available Plugins: ####
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+* [http://paynen.github.io/slickgrid-totals-plugin/](http://paynen.github.io/slickgrid-totals-plugin/)
+* [https://github.com/paynen/slickgrid-totals-plugin](https://github.com/paynen/slickgrid-totals-plugin)
 
-### How do I get set up? ###
+### Deliverables ###
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+#### Timeline ####
 
-### Contribution guidelines ###
+* - Estimate and create timeline of deliverables
 
-* Writing tests
-* Code review
-* Other guidelines
+#### Documentation ####
 
-### Who do I talk to? ###
+* - Provide description and usage example for each function created
+* - Define variables
 
-* Repo owner or admin
-* Other community or team contact
+#### Summary Plugin ####
+
+* - Allow same functionality of summary view (should work like on MS Access)
+* - Optimized procedures
+* - Address memory leaks issues.  (Add destroy/etc)
+* - Must be able to work on large dataset
+ * - Be able to do sum/count/avg/etc  using  SQL strings
